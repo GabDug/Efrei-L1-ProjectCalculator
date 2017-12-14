@@ -33,7 +33,28 @@ def eval_int(expression):
         return eval_int(leftExpression) // eval_int(rightExpression)
 
 
+def find_operator(expression):
+    parenthesis = 0
+    i = 0
+    for i in range(len(expression)):
+        if expression[i][1] == "parenthesis":
+            if expression[i][0] == '(':
+                parenthesis += 1
+            else:
+                parenthesis -= 1
+
+        elif expression[i][1] == "operator":
+            if expression[i][2] == 0 and parenthesis == 0:
+                return i
+    if expression[i - 1][1] == "operator":
+        return i - 1
+    else:
+        return None
+
+
 if __name__ == "__main__":
-    print("1,", eval_int(parse("3*2+5")))
-    print("2,", eval_int(parse("2+5*3")))
-    print("3, ", eval("3*2+5"))
+    #print("1,", eval_int(parse("3*2+5")))
+    #print("2,", eval_int(parse("2+5*3")))
+    #print("3, ", eval("3*2+5"))
+
+    print(find_operator(parse("(1 + 1) * 4")))
