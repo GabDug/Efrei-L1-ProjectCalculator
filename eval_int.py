@@ -53,8 +53,9 @@ def find_operator(expression):
 
 
 def remove_parenthesis(expression):
+
     if expression[0][0] == '(' and expression[-1][0] == ')':
-        return expression[1:-1]
+        return remove_parenthesis(expression[1:-1])
     else:
         return expression
 
@@ -72,5 +73,6 @@ if __name__ == "__main__":
     # print(eval_int(parse("(-1) + -1 + (-1 - -1)")))
 
     print("1, ", eval_int(parse("(3*2+5)")))
+    print("1, ", eval_int(parse("(((3*2+5)))")))
     print("2, ", eval_int(parse("5+2*3")))
     print("3, ", eval("5+2*3"))
