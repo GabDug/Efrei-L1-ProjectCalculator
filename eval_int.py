@@ -24,10 +24,12 @@ def eval_int(expression):
 
     if mainOperator[0] == '+':
         return eval_int(leftExpression) + eval_int(rightExpression)
-    if mainOperator[0] == '-':
+    elif mainOperator[0] == '-':
         return eval_int(leftExpression) - eval_int(rightExpression)
-    if mainOperator[0] == '*':
+    elif mainOperator[0] == '*':
         return eval_int(leftExpression) * eval_int(rightExpression)
+    elif mainOperator[0] == "/":
+        return eval_int(leftExpression) // eval_int(rightExpression)
 
 
 if __name__ == "__main__":
