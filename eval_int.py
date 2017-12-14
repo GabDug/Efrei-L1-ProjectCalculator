@@ -12,16 +12,16 @@ def eval_int(expression):
     # expression is: single-operand
     if length == 1:
         # should be an operand
-        print("Return ", expression[0][0])
+        print(" Return ", expression[0][0])
         return expression[0][0]
 
     # expression is: left-expression main-operator right-expression
     leftExpression = expression[:length - 2]
-    print("Left Operand : " + str(leftExpression))
+    print(" Left Operand : " + str(leftExpression))
     rightExpression = expression[length - 1:]
-    print("Right Operand : ", rightExpression)
+    print(" Right Operand : ", rightExpression)
     mainOperator = expression[length - 2]
-    print("Operator : ", mainOperator)
+    print(" Operator : ", mainOperator)
 
     if mainOperator[0] == '+':
         return eval_int(leftExpression) + eval_int(rightExpression)
