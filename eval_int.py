@@ -60,6 +60,17 @@ def remove_parenthesis(expression):
 
 
 if __name__ == "__main__":
+    # Already working:
+    # print(eval_int(parse("1")))
+    # print(eval_int(parse("(1)")))
+    # print(eval_int(parse("1-2")))
+    # print(eval_int(parse("4 / 2 * 3")))
+    # print(eval_int(parse("4 * 2 / 3")))
+    # print(eval_int(parse("1 + 2 * 3")))
+    # print(eval_int(parse("(1 + 2) * 3")))
+    # TODO Make that work, should output -2 (cause by bad parsing)
+    # print(eval_int(parse("(-1) + -1 + (-1 - -1)")))
+
     print("1, ", eval_int(parse("(3*2+5)")))
     print("2, ", eval_int(parse("5+2*3")))
     print("3, ", eval("5+2*3"))
