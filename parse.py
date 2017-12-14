@@ -28,6 +28,7 @@ def parse(expression: str) -> list:
 
 
 if __name__ == "__main__":
+    print(parse("3+4*2"))
     print(parse("(3 + 2) * 4"))
     print(parse(" ( 3+2 )* 4 "))
     print(parse("(3+254)* 44 "))
