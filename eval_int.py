@@ -2,6 +2,7 @@ from parse import parse
 
 
 def eval_int(expression):
+    expression = remove_parenthesis(expression)
     print("Input : ", expression)
     length = len(expression)
 
@@ -49,6 +50,11 @@ def find_operator(expression):
         return i - 1
     else:
         return None
+
+
+def remove_parenthesis(expression):
+    if expression[0][0] == '(' and expression[-1][0] == ')':
+        return expression[1:-1]
 
 
 if __name__ == "__main__":
