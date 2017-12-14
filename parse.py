@@ -7,8 +7,10 @@ def _expression_to_list(expression: str) -> list:
 
 
 def _get_tuple(token: str) -> tuple:
-    if token in "*+/-":
-        return token, "operator"
+    if token in "+-":
+        return token, "operator", 0
+    elif token in "*/":
+        return token, "operator", 1
     elif token in "()":
         return token, "parenthesis"
     else:
