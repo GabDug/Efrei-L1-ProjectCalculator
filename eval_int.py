@@ -2,7 +2,7 @@ from parse import parse
 
 
 def eval_int(expression):
-    print(expression)
+    print("Input : ", expression)
     length = len(expression)
 
     # expression is: empty (should not happen)
@@ -12,22 +12,25 @@ def eval_int(expression):
     # expression is: single-operand
     if length == 1:
         # should be an operand
+        print("Return ", expression[0][0])
         return expression[0][0]
 
     # expression is: left-expression main-operator right-expression
     leftExpression = expression[:length - 2]
-    print("left" + str(leftExpression))
+    print("Left Operand : " + str(leftExpression))
     rightExpression = expression[length - 1:]
-    print("right", rightExpression)
+    print("Right Operand : ", rightExpression)
     mainOperator = expression[length - 2]
-    print("ope", mainOperator)
+    print("Operator : ", mainOperator)
 
     if mainOperator[0] == '+':
         return eval_int(leftExpression) + eval_int(rightExpression)
-    if mainOperator[0] == '-':
+    elif mainOperator[0] == '-':
         return eval_int(leftExpression) - eval_int(rightExpression)
-    if mainOperator[0] == '*':
+    elif mainOperator[0] == '*':
         return eval_int(leftExpression) * eval_int(rightExpression)
+    elif mainOperator[0] == "/":
+        return eval_int(leftExpression) // eval_int(rightExpression)
 
 
 if __name__ == "__main__":
