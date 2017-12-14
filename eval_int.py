@@ -16,11 +16,11 @@ def eval_int(expression):
         return expression[0][0]
 
     # expression is: left-expression main-operator right-expression
-    leftExpression = expression[:length - 2]
+    leftExpression = expression[:find_operator(expression)]
     print(" Left Operand : " + str(leftExpression))
-    rightExpression = expression[length - 1:]
+    rightExpression = expression[find_operator(expression)+1:]
     print(" Right Operand : ", rightExpression)
-    mainOperator = expression[length - 2]
+    mainOperator = expression[find_operator(expression)]
     print(" Operator : ", mainOperator)
 
     if mainOperator[0] == '+':
@@ -42,7 +42,6 @@ def find_operator(expression):
                 parenthesis += 1
             else:
                 parenthesis -= 1
-
         elif expression[i][1] == "operator":
             if expression[i][2] == 0 and parenthesis == 0:
                 return i
@@ -53,8 +52,8 @@ def find_operator(expression):
 
 
 if __name__ == "__main__":
-    #print("1,", eval_int(parse("3*2+5")))
-    #print("2,", eval_int(parse("2+5*3")))
-    #print("3, ", eval("3*2+5"))
+    print("1, ", eval_int(parse("3*2+5")))
+    print("2, ", eval_int(parse("5+2*3")))
+    print("3, ", eval("5+2*3"))
 
-    print(find_operator(parse("(1 + 1) * 4")))
+    # print(find_operator(parse("(1 + 1) * 4")))
