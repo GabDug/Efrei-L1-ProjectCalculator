@@ -1,5 +1,5 @@
-Project Calculator
-===
+Project Calculator [![Build Status](https://travis-ci.com/SoFolichon/ProjectCalculator.svg?token=p5pFoFaqAiLRDSEHnrdp&branch=master)](https://travis-ci.com/SoFolichon/ProjectCalculator)
+==================
 By Thibault LEPEZ and Gabriel DUGNY
 
 Technical Notes
