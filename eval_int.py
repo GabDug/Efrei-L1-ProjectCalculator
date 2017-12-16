@@ -87,16 +87,10 @@ if __name__ == "__main__":
             ("(-1 + -1 - (-1 - -1))", "-2"),
             ("((-1 + -1 - (-1 - -1)))", "-2"),
             ("((1+(2*3))*(4*5))", "140")]
-    failure = False
     for e in range(len(test)):
         if str(eval_int(parse(test[e][0]))) == str(test[e][1]):
             print(f"Succes {e}: {test[e][0]} = {test[e][1]}")
         else:
-            failure = True
             print(f"Failure {e}: {test[e][0]} != {test[e][1]}")
             print(f" => Result: {eval_int(parse(test[e][0]))}")
             print(f" => eval : {eval(test[e][0])}")
-    if failure:
-        print("Check failure.")
-    else:
-        print("No failure.")
