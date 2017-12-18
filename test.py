@@ -2,6 +2,7 @@ import unittest
 from eval_int import eval_int
 from parse import parse
 
+
 class TestInt(unittest.TestCase):
     def test_integers(self):
         test = [("1", "1"),
@@ -19,7 +20,7 @@ class TestInt(unittest.TestCase):
 
         for e in range(len(test)):
             with self.subTest(e=e):
-                self.assertEqual(str(eval_int(parse(test[e][0]))),str(test[e][1]))
+                self.assertEqual(str(eval_int(parse(test[e][0]))), str(test[e][1]))
 
 
 if __name__ == '__main__':

@@ -66,6 +66,7 @@ def find_operator(expression):
 
 
 def remove_parenthesis(expression):
+    print()
     """Remove useless global parenthesis. Works recursively."""
     # If there is a parenthesis at beginning and at the end, and they are matching.
     if expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == expression[-1][2]:
