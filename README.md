@@ -1,6 +1,7 @@
 Project Calculator [![Build Status](https://travis-ci.com/SoFolichon/ProjectCalculator.svg?token=p5pFoFaqAiLRDSEHnrdp&branch=master)](https://travis-ci.com/SoFolichon/ProjectCalculator)
 ==================
 By Thibault LEPEZ and Gabriel DUGNY
+This project is licensed under the terms of the GNU AGPLv3 license.
 
 Technical Notes
 ---
