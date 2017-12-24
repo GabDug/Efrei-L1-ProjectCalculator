@@ -1,9 +1,9 @@
-from parse import parse
+from parse import parse, remove_parenthesis
 
 
 def eval_int(expression):
     expression = remove_parenthesis(expression)
-    print("Input : ", expression)
+    print("Int Input : ", expression)
     length = len(expression)
 
     # expression is: empty (should not happen)
@@ -45,10 +45,10 @@ def find_operator(expression):
             else:
                 parenthesis -= 1
         elif expression[i][1] == "operator":
-            if expression[i][2] == 0 and parenthesis == 0:
+            if expression[i][2] == 2 and parenthesis == 0:
                 return i
     # If none then check for * or /
-    for i in range(len(expression)-1, -1, -1):
+    for i in range(len(expression) - 1, -1, -1):
         if expression[i][1] == "parenthesis":
             if expression[i][0] == '(':
                 parenthesis += 1
@@ -58,21 +58,11 @@ def find_operator(expression):
             if expression[i][2] == 1 and parenthesis == 0:
                 return i
     # @Thibault : What is what? Useless If (Dangerous)
-    if expression[i - 1][1] == "operator":
-        return i - 1
+    # if expression[i - 1][1] == "operator":
+    #     return i - 1
     else:
         print("Error: couldn't find main operator.")
         return None
-
-
-def remove_parenthesis(expression):
-    print()
-    """Remove useless global parenthesis. Works recursively."""
-    # If there is a parenthesis at beginning and at the end, and they are matching.
-    if expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == expression[-1][2]:
-        return remove_parenthesis(expression[1:-1])
-    else:
-        return expression
 
 
 if __name__ == "__main__":
@@ -88,7 +78,7 @@ if __name__ == "__main__":
             ("(-1 + -1 - (-1 - -1))", "-2"),
             ("((-1 + -1 - (-1 - -1)))", "-2"),
             ("((1+(2*3))*(4*5))", "140"),
-             ("(4+6)-5*9", "-35")]
+            ("(4+6)-5*9", "-35")]
     for e in range(len(test)):
         if str(eval_int(parse(test[e][0]))) == str(test[e][1]):
             print(f"Succes {e}: {test[e][0]} = {test[e][1]}")

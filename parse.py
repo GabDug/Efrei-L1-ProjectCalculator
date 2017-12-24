@@ -1,5 +1,7 @@
+import string
+
+
 def _expression_to_list(expression: str) -> list:
-    # return re.split("([()+-/*])", expression.replace(" ", ""))
     tokens = []
 
     i = 0
@@ -10,7 +12,7 @@ def _expression_to_list(expression: str) -> list:
             i += 1
             continue
         if expression[i] in "+-":
-            tokens.append((expression[i], "operator", 0))
+            tokens.append((expression[i], "operator", 2))
             i += 1
             continue
         if expression[i] in "/*":
@@ -49,6 +51,40 @@ def _expression_to_list(expression: str) -> list:
                 tokens.append(tup)
             i = j
             continue
+        if expression[i] in string.ascii_letters:
+            j = i + 1
+            while j < len(expression) and expression[j] in string.ascii_letters + string.digits:
+                j += 1
+            if expression[i:j] == "true":
+                tup = (expression[i:j], "boolean")
+            elif expression[i:j] == "false":
+                tup = (expression[i:j], "boolean")
+            elif expression[i:j] == "not":
+                tup = (expression[i:j], "operator", 4)
+            elif expression[i:j] == "and":
+                tup = (expression[i:j], "operator", 5)
+            elif expression[i:j] == "or":
+                tup = (expression[i:j], "operator", 6)
+
+            else:
+                tup = (expression[i:j], "variable")
+
+            tokens.append(tup)
+            i = j
+            continue
+        if expression[i] in "<>=!":
+            j = i + 1
+            while j < len(expression) and expression[j] == "=":
+                j += 1
+            if expression[i:j] == "=":
+                tup = (expression[i:j], "assignment")
+            elif expression[i:j] in ["==", "!=", "<=", ">=", "<", ">"]:
+                tup = (expression[i:j], "operator", 3)
+            else:
+                tup = (expression[i:j], "unknown")
+            tokens.append(tup)
+            i = j
+            continue
         if expression[i] in "'\"":
             j = i + 1
             while j < len(expression) and not expression[j] == expression[i]:
@@ -64,41 +100,22 @@ def _expression_to_list(expression: str) -> list:
     return tokens
 
 
-def _get_tuple(token: str, index: int) -> tuple:
-    """Returns a tuple for each token.
-    First value is the token,
-    Second value is the kind of token,
-    (Optional) Third value is:  for operators: the priority (0 is the highest)
-                                for parenthesis: the index of the couple opening parenthesis
-    """
-    if token in "+-":
-        return token, "operator", 0
-    elif token in "*/":
-        return token, "operator", 1
-    elif token in "()":
-        global parenthesis_stack
-        if token == "(":
-            parenthesis_stack.append(index)
-            parenthesis_id = index
-        elif token == ")":
-            parenthesis_id = parenthesis_stack[-1]
-            del parenthesis_stack[-1]
-        return token, "parenthesis", parenthesis_id
-    else:
-        try:
-            return int(token), "integer"
-        except ValueError:
-            return token, "unknown"
-
-
 def parse(expression: str) -> list:
     """Parse a string expression to a list of tuples."""
     global parenthesis_stack
     parenthesis_stack = []
     list_expression = _expression_to_list(expression)
-    print(list_expression)
-    final_list = []
+    print("List expression: ", list_expression)
     return list_expression
+
+
+def remove_parenthesis(expression):
+    """Remove useless global parenthesis. Works recursively."""
+    # If there is a parenthesis at beginning and at the end, and they are matching.
+    if expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == expression[-1][2]:
+        return remove_parenthesis(expression[1:-1])
+    else:
+        return expression
 
 
 if __name__ == "__main__":
@@ -119,3 +136,8 @@ if __name__ == "__main__":
     print(parse("(1+(2*3))(4*5)"))
     print(parse("((1+(2*3))(4*5))"))
     print(parse("(4+6)-5*9"))
+    print(parse("true"))
+    print(parse("true and false"))
+    print(parse("1 < 5 and 5 < 10"))
+    print(parse("1+ 2 +3 == 2 * 3"))
+    print(parse("test = 2 * 3"))
