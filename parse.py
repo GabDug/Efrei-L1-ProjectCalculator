@@ -5,6 +5,7 @@ def _expression_to_list(expression: str) -> list:
     i = 0
     length = len(expression)
     while i < length:
+        # print("=> ", tokens)
         if expression[i] == ' ':
             i += 1
             continue
@@ -18,6 +19,7 @@ def _expression_to_list(expression: str) -> list:
             continue
         if expression[i] in "()":
             global parenthesis_stack
+            print(parenthesis_stack)
             if expression[i] == "(":
                 parenthesis_stack.append(i)
                 parenthesis_id = i
@@ -36,7 +38,7 @@ def _expression_to_list(expression: str) -> list:
             # Here we check for negative numbers
             # TODO Stop working with tuple, better code
             if i != 0 and tokens[-1][0] == "-":
-                if i == 1 or tokens[-2][1] != "integer":
+                if (i == 1 or tokens[-2][1] != "integer") and not (i > 2 and tokens[-2][0] == ")"):
                     # remove the operator
                     del tokens[-1]
                     tup = (-1 * tup[0], tup[1])
@@ -59,7 +61,6 @@ def _expression_to_list(expression: str) -> list:
             # restart after the ending symbol (' or "...)
             i = j + 1
             continue
-    print("=> ", tokens)
     return tokens
 
 
@@ -92,16 +93,16 @@ def _get_tuple(token: str, index: int) -> tuple:
 
 def parse(expression: str) -> list:
     """Parse a string expression to a list of tuples."""
+    global parenthesis_stack
+    parenthesis_stack = []
     list_expression = _expression_to_list(expression)
     print(list_expression)
     final_list = []
-    global parenthesis_stack
-    parenthesis_stack = []
     return list_expression
 
 
 if __name__ == "__main__":
-    # print(parse("3+4*2"))
+    print(parse("3+4*2"))
     print(parse("248+345"))
     print(parse("(3 + 2) * 4"))
     print(parse("3 - 4"))
@@ -117,3 +118,4 @@ if __name__ == "__main__":
     print(parse("(1+(2*3))"))
     print(parse("(1+(2*3))(4*5)"))
     print(parse("((1+(2*3))(4*5))"))
+    print(parse("(4+6)-5*9"))
