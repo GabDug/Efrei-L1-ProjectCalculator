@@ -2,13 +2,18 @@ import string
 
 
 def _expression_to_list(expression: str) -> list:
+    """Output a list of tokens (tuples) from a string."""
     tokens = []
 
     i = 0
+    loop_count = 0
     length = len(expression)
     while i < length:
+        loop_count += 1
+        if loop_count > 10000:
+            return "Error: loop limit reached while parsing"
         # print("=> ", tokens)
-        if expression[i] == ' ':
+        if expression[i] in [" ", "\n", "\r"]:
             i += 1
             continue
         if expression[i] in "+-":

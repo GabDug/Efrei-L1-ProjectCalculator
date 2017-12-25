@@ -1,7 +1,6 @@
-from eval_global import *
-from parse import parse
+from eval_global import ext_eval_global
 
 print("Expression Evaluator: Integer Only Edition")
 while True:
     exp = input("? ")
-    print(eval_global(parse(exp)))
+    print(ext_eval_global(exp))

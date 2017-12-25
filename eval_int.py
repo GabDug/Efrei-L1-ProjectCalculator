@@ -1,7 +1,8 @@
 from parse import parse, remove_parenthesis
 
 
-def eval_int(expression):
+def eval_int(expression:list):
+    """Evaluates an integer expression, where the input is a parsed list of tokens."""
     expression = remove_parenthesis(expression)
     print("Int Input : ", expression)
     length = len(expression)
@@ -35,7 +36,7 @@ def eval_int(expression):
 
 
 def find_operator(expression):
-    """Find the operator where to split an expression in two operands."""
+    """Find the operator where to split an integer expression in two operands."""
     parenthesis = 0
     # Check for + or -
     for i in range(len(expression)):
