@@ -1,4 +1,11 @@
+import logging
 import string
+from sys import stdout
+
+if __name__ != "__main__":
+    import logger_conf
+
+    logger = logger_conf.Log.logger
 
 
 def _expression_to_list(expression: str) -> list:
@@ -12,7 +19,7 @@ def _expression_to_list(expression: str) -> list:
         loop_count += 1
         if loop_count > 10000:
             return "Error: loop limit reached while parsing"
-        # print("=> ", tokens)
+        # logger.debug("=> ", tokens)
         if expression[i] in [" ", "\n", "\r"]:
             i += 1
             continue
@@ -26,7 +33,7 @@ def _expression_to_list(expression: str) -> list:
             continue
         if expression[i] in "()":
             global parenthesis_stack
-            print(parenthesis_stack)
+            logger.debug(str(parenthesis_stack))
             if expression[i] == "(":
                 parenthesis_stack.append(i)
                 parenthesis_id = i
@@ -95,8 +102,8 @@ def _expression_to_list(expression: str) -> list:
             while j < len(expression) and not expression[j] == expression[i]:
                 j += 1
             if j == len(expression):
-                print(" Error: no ending symbol for string")
-
+                logger.error("Error: no ending symbol for string starting at " + str(i) + ".")
+                raise Exception("Error: no ending symbol for string starting at " + str(i) + ".")
             # i+1 to j : string without the starting and ending symbol
             tokens.append((expression[i + 1:j], "string"))
             # restart after the ending symbol (' or "...)
@@ -110,7 +117,7 @@ def parse(expression: str) -> list:
     global parenthesis_stack
     parenthesis_stack = []
     list_expression = _expression_to_list(expression)
-    print("List expression: ", list_expression)
+    logger.info("List expression: " + str(list_expression))
     return list_expression
 
 
@@ -124,25 +131,35 @@ def remove_parenthesis(expression):
 
 
 if __name__ == "__main__":
-    print(parse("3+4*2"))
-    print(parse("248+345"))
-    print(parse("(3 + 2) * 4"))
-    print(parse("3 - 4"))
-    print(parse("-4 + 3"))
-    print(parse("(-1) + -1 + (-1 - -1)"))
-    print(parse("(3+254)* 44 "))
-    print(parse("'Yo'"))
-    print(parse("'Hey''You'"))
-    print(parse("'Test' + 'os'"))
-    print(parse("'test"))
-    print(parse("((1))"))
-    print(parse("(1)*(2)"))
-    print(parse("(1+(2*3))"))
-    print(parse("(1+(2*3))(4*5)"))
-    print(parse("((1+(2*3))(4*5))"))
-    print(parse("(4+6)-5*9"))
-    print(parse("true"))
-    print(parse("true and false"))
-    print(parse("1 < 5 and 5 < 10"))
-    print(parse("1+ 2 +3 == 2 * 3"))
-    print(parse("test = 2 * 3"))
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    ch = logging.StreamHandler(stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] : %(message)s")
+    formatter.datefmt = "%H:%M:%S"
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logger.info("Starting logger from module.")
+
+    logger.info(parse("3+4*2"))
+    logger.info(parse("248+345"))
+    logger.info(parse("(3 + 2) * 4"))
+    logger.info(parse("3 - 4"))
+    logger.info(parse("-4 + 3"))
+    logger.info(parse("(-1) + -1 + (-1 - -1)"))
+    logger.info(parse("(3+254)* 44 "))
+    logger.info(parse("'Yo'"))
+    logger.info(parse("'Hey''You'"))
+    logger.info(parse("'Test' + 'os'"))
+    logger.info(parse("'test"))
+    logger.info(parse("((1))"))
+    logger.info(parse("(1)*(2)"))
+    logger.info(parse("(1+(2*3))"))
+    logger.info(parse("(1+(2*3))(4*5)"))
+    logger.info(parse("((1+(2*3))(4*5))"))
+    logger.info(parse("(4+6)-5*9"))
+    logger.info(parse("true"))
+    logger.info(parse("true and false"))
+    logger.info(parse("1 < 5 and 5 < 10"))
+    logger.info(parse("1+ 2 +3 == 2 * 3"))
+    logger.info(parse("test = 2 * 3"))

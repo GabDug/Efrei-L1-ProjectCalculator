@@ -1,5 +1,10 @@
 from parse import parse, remove_parenthesis
 
+if __name__ != "__main__":
+    import logger_conf
+
+    logger = logger_conf.Log.logger
+
 
 def find_operator(expression):
     """Find the operator where to split an expression in two operands."""
@@ -25,8 +30,8 @@ def find_operator(expression):
             if expression[i][2] == 1 and parenthesis == 0:
                 return i
     else:
-        print("Error: couldn't find main operator.")
-        return None
+        logger.error("Error: couldn't find operator. " + str(expression))
+        raise Exception("Error: couldn't find operator.")
 
 
 def eval_bool(expression):

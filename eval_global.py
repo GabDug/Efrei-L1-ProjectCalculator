@@ -1,16 +1,16 @@
 from eval_int import eval_int
 from eval_str import eval_str
 from parse import parse, remove_parenthesis
+import logging
 
+logger = logging.getLogger(__name__)
 
 def single_element(element):
     """Evaluate a single token. Used when there is only one token."""
     if element[1] == "variable":
         if element[0] == "exit":
-            print("Exiting...")
+            logger.info("Exiting...")
             exit()
-        else:
-            return element[3]
     elif element[1] == "integer":
         return element[0]
     elif element[1] == "string":
@@ -34,5 +34,5 @@ def ext_eval_global(expression_str: str):
 
 
 if __name__ == "__main__":
-    print(eval_global(parse("1")))
-    print(eval_global(parse("exit")))
+    logger.info(eval_global(parse("1")))
+    logger.info(eval_global(parse("exit")))

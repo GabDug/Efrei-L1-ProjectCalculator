@@ -10,6 +10,9 @@ from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
 
 from eval_global import ext_eval_global
+import logger_conf
+
+logger = logger_conf.Log.logger
 
 welcome_text = """\
 Welcome to Expression Evaluator: Integer Only Edition
@@ -81,7 +84,7 @@ class TkConsole(ScrolledText):
             if e is not None:
                 self.write(END, e, ('output',))
         except Exception as err:
-            self.write(END, "ERROR:\n%s\n" % err, ('error',))
+            self.write(END, "%s\n" % err, ('error',))
 
     def prompt(self):
         # self.tag_delete('prompt')

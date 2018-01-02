@@ -1,12 +1,18 @@
+from sys import stdout
+
 from parse import parse, remove_parenthesis
 
+if __name__ != "__main__":
+    import logger_conf
 
-def eval_int(expression:list):
+    logger = logger_conf.Log.logger
+
+
+def eval_int(expression: list):
     """Evaluates an integer expression, where the input is a parsed list of tokens."""
     expression = remove_parenthesis(expression)
-    print("Int Input : ", expression)
+    logger.debug("Int Input: " + str(expression))
     length = len(expression)
-
     # expression is: empty (should not happen)
     if length == 0:
         return None
@@ -14,16 +20,19 @@ def eval_int(expression:list):
     # expression is: single-operand
     if length == 1:
         # should be an operand
-        print(" Return ", expression[0][0])
+        logger.debug(" Expression Return " + str(expression[0][0]))
         return expression[0][0]
 
     # expression is: left-expression main-operator right-expression
-    left_expression = expression[:find_operator(expression)]
-    print(" Left Operand : " + str(left_expression))
-    right_expression = expression[find_operator(expression) + 1:]
-    print(" Right Operand : ", right_expression)
-    main_operator = expression[find_operator(expression)]
-    print(" Operator : ", main_operator)
+
+    operator_index = find_operator(expression)
+
+    left_expression = expression[:operator_index]
+    logger.debug(" Left Operand : " + str(left_expression))
+    right_expression = expression[operator_index + 1:]
+    logger.debug(" Right Operand : " + str(right_expression))
+    main_operator = expression[operator_index]
+    logger.debug(" Operator : " + str(main_operator))
 
     if main_operator[0] == '+':
         return eval_int(left_expression) + eval_int(right_expression)
@@ -62,11 +71,23 @@ def find_operator(expression):
     # if expression[i - 1][1] == "operator":
     #     return i - 1
     else:
-        print("Error: couldn't find main operator.")
-        return None
+        logger.error("Error: couldn't find operator. " + str(expression))
+        raise Exception("Error: couldn't find operator.")
 
 
 if __name__ == "__main__":
+    import logging
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    ch = logging.StreamHandler(stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] : %(message)s")
+    formatter.datefmt = "%H:%M:%S"
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logger.info("Starting logger from module.")
+
     test = [("1", "1"),
             ("(1)", "1"),
             ("1 - 2", "-1"),
@@ -82,8 +103,8 @@ if __name__ == "__main__":
             ("(4+6)-5*9", "-35")]
     for e in range(len(test)):
         if str(eval_int(parse(test[e][0]))) == str(test[e][1]):
-            print(f"Succes {e}: {test[e][0]} = {test[e][1]}")
+            logger.info(f"Succes {e}: {test[e][0]} = {test[e][1]}")
         else:
-            print(f"Failure {e}: {test[e][0]} != {test[e][1]}")
-            print(f" => Result: {eval_int(parse(test[e][0]))}")
-            print(f" => eval : {eval(test[e][0])}")
+            logger.info(f"Failure {e}: {test[e][0]} != {test[e][1]}")
+            logger.info(f" => Result: {eval_int(parse(test[e][0]))}")
+            logger.info(f" => eval : {eval(test[e][0])}")
