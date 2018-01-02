@@ -19,7 +19,13 @@ Achievements and difficulties
 -----------------------------
 - Achievements with respect to the requirements
 - Problems you faces
-- WHat we have earned (unit test, collaboration...)
+  - Regressions
+- What we have earned (unit test, collaboration...)
+  - Unit test to avoid regressions
+- Better understanding of maths, algorithmic:
+  - We have to understand the way each expression works, term by term (factors, atoms...)
+ (Precedence, associativity...)
+
 
 Conclusion
 ----------
