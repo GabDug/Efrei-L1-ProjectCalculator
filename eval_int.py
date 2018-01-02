@@ -67,12 +67,9 @@ def find_operator(expression):
         elif expression[i][1] == "operator":
             if expression[i][2] == 1 and parenthesis == 0:
                 return i
-    # @Thibault : What is what? Useless If (Dangerous)
-    # if expression[i - 1][1] == "operator":
-    #     return i - 1
-    else:
-        logger.error("Error: couldn't find operator. " + str(expression))
-        raise Exception("Error: couldn't find operator.")
+    # else:
+    #     logger.error("Error: couldn't find operator. " + str(expression))
+    #     raise Exception("Error: couldn't find operator.")
 
 
 if __name__ == "__main__":

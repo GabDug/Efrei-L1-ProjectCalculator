@@ -1,6 +1,6 @@
 import unittest
 
-from eval_int import eval_int
+from eval_global import ext_eval_global
 from parse import parse
 
 
@@ -21,9 +21,22 @@ class TestInt(unittest.TestCase):
                 ("(4+6)-5*9", "-35")]
 
         for e in range(len(test)):
-            print("Test ", test[e])
             with self.subTest(e=e):
-                self.assertEqual(str(eval_int(parse(test[e][0]))), str(test[e][1]))
+                self.assertEqual(str(ext_eval_global(test[e][0])), str(test[e][1]))
+
+
+class TestBool(unittest.TestCase):
+    def test_comparison(self):
+        test = [("true", "true"),
+                ("(false)", "false"),
+                ("true == true", "true"),
+                ("true == false", "false"),
+                ("4/2 == 1+1", "true"),
+                ]
+
+        for e in range(len(test)):
+            with self.subTest(e=e):
+                self.assertEqual(str(ext_eval_global(test[e][0])), str(test[e][1]))
 
 
 if __name__ == '__main__':

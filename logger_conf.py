@@ -7,7 +7,7 @@ class Log:
     logger.setLevel(logging.DEBUG)
     # Terminal log
     ch = logging.StreamHandler(stdout)
-    ch.setLevel(logging.INFO)
+    ch.setLevel(logging.DEBUG)
 
     # File log
     f = logging.FileHandler("calculator.log", mode="w")
