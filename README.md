@@ -8,3 +8,12 @@ Technical Notes
 ---
 For this project, we used [f-strings](https://www.python.org/dev/peps/pep-0498/), only available with Python 3.6+.
 The project and the exercices won't work on a previous version of Python.
+
+
+TODO
+----
+- Everything type-related: errors, casting, concatenation
+- 2.1.4. Promoting to String Types
+- 2.2. Variables (Assignment, Substitution)
+- 2.3. Error Handling (Incomplete)
+- 3. Bonus Features (Conf File?)

@@ -3,14 +3,15 @@ import string
 from sys import stdout
 
 if __name__ != "__main__":
-    import logger_conf
+    import logging
 
-    logger = logger_conf.Log.logger
+    logger = logging.getLogger(__name__)
 
 
 def _expression_to_list(expression: str) -> list:
     """Output a list of tokens (tuples) from a string."""
     tokens = []
+    parenthesis_stack = []
 
     i = 0
     loop_count = 0
@@ -18,7 +19,7 @@ def _expression_to_list(expression: str) -> list:
     while i < length:
         loop_count += 1
         if loop_count > 10000:
-            return "Error: loop limit reached while parsing"
+            raise Exception(f"Error: loop limit reached while parsing. Can't parse {expression[i]} at {i}.")
         # logger.debug("=> ", tokens)
         if expression[i] in [" ", "\n", "\r"]:
             i += 1
@@ -32,8 +33,7 @@ def _expression_to_list(expression: str) -> list:
             i += 1
             continue
         if expression[i] in "()":
-            global parenthesis_stack
-            logger.debug(str(parenthesis_stack))
+            logger.debug("Parenthesis stack:" + str(parenthesis_stack))
             if expression[i] == "(":
                 parenthesis_stack.append(i)
                 parenthesis_id = i
@@ -99,9 +99,10 @@ def _expression_to_list(expression: str) -> list:
             continue
         if expression[i] in "'\"":
             j = i + 1
-            while j < len(expression) and not expression[j] == expression[i]:
+            while j < len(expression) and expression[j] != expression[i]:
                 j += 1
-            if j == len(expression):
+            # TODO Check the condition for error, may be invalid
+            if j == len(expression) or expression[j] != expression[i]:
                 logger.error("Error: no ending symbol for string starting at " + str(i) + ".")
                 raise Exception("Error: no ending symbol for string starting at " + str(i) + ".")
             # i+1 to j : string without the starting and ending symbol
@@ -114,10 +115,9 @@ def _expression_to_list(expression: str) -> list:
 
 def parse(expression: str) -> list:
     """Parse a string expression to a list of tuples."""
-    global parenthesis_stack
-    parenthesis_stack = []
+
     list_expression = _expression_to_list(expression)
-    logger.info("List expression: " + str(list_expression))
+    logger.debug("List expression: " + str(list_expression))
     return list_expression
 
 
@@ -141,6 +141,9 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
+    # logger.info(parse("'Salut'"))
+    # logger.info(parse("'Salut'+'toi'"))
+    # logger.info(parse("'Salut+'toi'"))
     logger.info(parse("3+4*2"))
     logger.info(parse("248+345"))
     logger.info(parse("(3 + 2) * 4"))
@@ -151,7 +154,7 @@ if __name__ == "__main__":
     logger.info(parse("'Yo'"))
     logger.info(parse("'Hey''You'"))
     logger.info(parse("'Test' + 'os'"))
-    logger.info(parse("'test"))
+    # logger.info(parse("'test"))
     logger.info(parse("((1))"))
     logger.info(parse("(1)*(2)"))
     logger.info(parse("(1+(2*3))"))
