@@ -14,11 +14,6 @@ import logger_conf
 
 logger = logger_conf.Log.logger
 
-welcome_text = """\
-Welcome to Expression Evaluator: Integer Only Edition
-Use "exit" to exit console
-"""
-
 
 class TkConsole(ScrolledText):
     """Tk console widget which can be easily embedded withing tkinter widgets"""
@@ -40,7 +35,8 @@ class TkConsole(ScrolledText):
         sys.stdout = StdoutRedirector(self)
         sys.stderr = StderrRedirector(self)
         self.prompt()
-        self.write_end(welcome_text, ('welcome',))
+        self.write_end("Welcome to Expression Evaluator: Integer Only Edition.\nUse \"exit\" to exit console",
+                       ('welcome',))
         self.focus_set()
         self.run_initfile()
 
