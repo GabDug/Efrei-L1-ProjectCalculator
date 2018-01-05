@@ -30,19 +30,17 @@ class TkConsole(ScrolledText):
 
         ScrolledText.__init__(self, master, **opt)
         self.pack(side=TOP, fill=BOTH, expand=True)
+        self._prompt = "? "
         self.text_init(opt)
         self.bindings()
-        sys.stdout = StdoutRedirector(self)
-        sys.stderr = StderrRedirector(self)
         self.prompt()
-        self.write_end("Welcome to Expression Evaluator: Integer Only Edition.\nUse \"exit\" to exit console",
+        self.write_end("Welcome to Expression Evaluator: Cheap Edition.\nUse \"exit\" to exit console.\n",
                        ('welcome',))
         self.focus_set()
-        self.run_initfile()
 
     def text_init(self, opt):
         prompt_font = opt['font'][0:2] + ('bold',)
-        self._prompt = ">>> "
+
         self.tag_config('prompt', font=prompt_font, foreground='maroon')
         self.tag_config('output', foreground='DarkGreen')
         self.tag_config('error', foreground='red')
@@ -79,8 +77,8 @@ class TkConsole(ScrolledText):
             # self.write(END, '\n')
             if e is not None:
                 self.write(END, e, ('output',))
-        except Exception as err:
-            self.write(END, "%s\n" % err, ('error',))
+        except Exception as e:
+            self.write(END, "%s\n" % e, ('error',))
 
     def prompt(self):
         # self.tag_delete('prompt')
@@ -210,79 +208,8 @@ class TkConsole(ScrolledText):
     def focus(self, event=None):
         self.focus_set()
 
-    def run_initfile(self):
-        if self.initfile is None:
-            return 0
-        if not os.path.exists(self.initfile):
-            self.writeline("Initialization file %s does not exist!" % (self.initfile,), 'error')
-            return 1
-        with open(self.initfile) as f:
-            code = compile(f.read(), self.initfile, 'exec')
-            try:
-                exec(code, globals())
-                self.writeline("Initialization file %s was successfuly executed" % (self.initfile,), 'output')
-            except Exception as e:
-                self.writeline("Failed to execute initialization file %s:" % (self.initfile,), 'error')
-                self.writeline(e.message, 'error')
-                return 2
-        return 0
-
     def none(self, event=None):
         pass
-        # return "continue"
-        # return "break"
-
-
-# -------------------------------------------------------------------------
-
-class StdoutRedirector(object):
-    def __init__(self, text_widget):
-        self.text = text_widget
-
-    def write(self, string):
-        sys.__stdout__.write(string)
-        l1, c1 = index_to_tuple(self.text, "%s-1c" % END)
-        l2, c2 = index_to_tuple(self.text, 'limit')
-        if l1 == l2:
-            self.text.write('limit-3c', string)
-        else:
-            self.text.write('end', string)
-        self.text.see('end')
-        # self.text.master.update()
-
-    def writelines(self, lines):
-        sys.__stdout__.writelines(lines)
-        for line in lines:
-            self.text.write(line)
-
-    def flush(self):
-        # self.text.master.update()
-        sys.__stdout__.flush()
-
-
-class StderrRedirector(object):
-    def __init__(self, text_widget):
-        self.text = text_widget
-
-    def write(self, string):
-        sys.__stderr__.write(string)
-        l1, c1 = index_to_tuple(self.text, "%s-1c" % END)
-        l2, c2 = index_to_tuple(self.text, 'limit')
-        if l1 == l2:
-            self.text.write('limit-3c', string)
-        else:
-            self.text.write('end', string)
-        self.text.see('end')
-        # self.text.master.update()
-
-    def writelines(self, lines):
-        sys.__stderr__.writelines(lines)
-        for line in lines:
-            self.text.write(line)
-
-    def flush(self):
-        # self.text.master.update()
-        sys.__stderr__.flush()
 
 
 def event_modifiers(event):

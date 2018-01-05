@@ -48,6 +48,7 @@ def eval_global(expression: list):
     # expression is: single-operand
     if length == 1:
         # should be an operand
+        # Do not simplify
         if expression[0] == True:
             logger.debug("  Return: true")
             return "true"
@@ -69,6 +70,8 @@ def eval_global(expression: list):
     main_operator = expression[operator_index]
     logger.debug(" Operator: " + str(main_operator))
 
+    if (left_expression == [] or right_expression == []) and main_operator[0] != "not":
+        raise Exception(f"Error: missing operand (near '{main_operator[0]}')")
     # Prefix unary operator, right side of expression
     if expression[operator_index][0] == "not":
         logger.debug("  In Not Process:")

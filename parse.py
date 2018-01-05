@@ -124,10 +124,15 @@ def parse(expression: str) -> list:
 def remove_parenthesis(expression):
     """Remove useless global parenthesis. Works recursively."""
     # If there is a parenthesis at beginning and at the end, and they are matching.
-    if expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == expression[-1][2]:
-        return remove_parenthesis(expression[1:-1])
-    else:
-        return expression
+    try:
+        if expression != [] and expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == \
+                expression[-1][2]:
+            return remove_parenthesis(expression[1:-1])
+        else:
+            return expression
+    except IndexError as e:
+        logger.error("Error: index error: " + str(e))
+        raise Exception("Error: missing operand near " + str(expression))
 
 
 if __name__ == "__main__":
