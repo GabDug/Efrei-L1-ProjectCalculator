@@ -1,4 +1,5 @@
-Project Calculator [![Build Status](https://travis-ci.com/SoFolichon/ProjectCalculator.svg?token=p5pFoFaqAiLRDSEHnrdp&branch=master)](https://travis-ci.com/SoFolichon/ProjectCalculator) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![Project Calculator](https://raw.githubusercontent.com/SoFolichon/ProjectCalculator/master/logo-project-hangman.png)
+[![Build Status](https://travis-ci.com/SoFolichon/ProjectCalculator.svg?token=p5pFoFaqAiLRDSEHnrdp&branch=master)](https://travis-ci.com/SoFolichon/ProjectCalculator) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 =========================================================================================================================================================================================
 By Thibault LEPEZ and Gabriel DUGNY.
 
