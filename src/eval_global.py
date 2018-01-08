@@ -7,7 +7,7 @@ if __name__ != "__main__":
     logger = logging.getLogger(__name__)
 
 
-def single_element(element: tuple):
+def _single_element(element: tuple):
     """Evaluate a single token. Used when there is only one token."""
     if element[1] == "variable":
         if element[0] == "exit":
@@ -21,7 +21,7 @@ def single_element(element: tuple):
         return element[0]
 
 
-def first_eval(expression: list):
+def _first_eval(expression: list):
     """Evaluates an expression (boolean, integer or string), where the input is a parsed list of tokens."""
     size = len(expression)
     if size == 0:
@@ -31,12 +31,12 @@ def first_eval(expression: list):
         # exit()
         raise Exception('Error: Expression is empty.')
     elif size == 1:
-        return single_element(expression[0])
+        return _single_element(expression[0])
     else:
-        return eval_global(expression)
+        return _eval_global(expression)
 
 
-def eval_global(expression: list):
+def _eval_global(expression: list):
     """Evaluates an expression, where the input is a parsed list of tokens."""
     expression = remove_parenthesis(expression)
     logger.debug("Input at eval global: " + str(expression))
@@ -45,19 +45,10 @@ def eval_global(expression: list):
     if length == 0:
         raise Exception("   Error: expression is empty.")
 
-    # expression is: single-operand
+    # If expression is single-operand
     if length == 1:
-        # should be an operand
-        # Do not simplify
-        if expression[0] == True:
-            logger.debug("  Return: true")
-            return "true"
-        if not expression[0]:
-            logger.debug("  Return: false")
-            return "false"
-
         logger.debug("  Return:" + str(expression[0][0]))
-        return expression[0][0]
+        return _single_element(expression[0])
 
     # Expression Shape: left-expression main-operator right-expression
     operator_index = find_operator(expression)
@@ -78,7 +69,7 @@ def eval_global(expression: list):
 
         if left_expression is None or left_expression == []:
             logger.debug("      Left Expression Is None")
-            if eval_global(right_expression) == "true":
+            if _eval_global(right_expression) == "true":
                 logger.debug("    Return: false")
                 return "false"
             else:
@@ -87,84 +78,76 @@ def eval_global(expression: list):
         else:
             logger.debug("      Left Exp     : " + str(left_expression))
 
-            if eval_global(right_expression) == "true":
+            if _eval_global(right_expression) == "true":
                 left_expression.append(("false", "boolean"))
             else:
                 left_expression.append(("true", "boolean"))
             logger.debug("  Return eval: " + str(left_expression))
-            return eval_global(left_expression)
+            return _eval_global(left_expression)
 
     # Binary infix operators
     else:
         if main_operator[0] == '+':
-            return eval_global(left_expression) + eval_global(right_expression)
+            return _eval_global(left_expression) + _eval_global(right_expression)
         elif main_operator[0] == '-':
-            return eval_global(left_expression) - eval_global(right_expression)
+            return _eval_global(left_expression) - _eval_global(right_expression)
         elif main_operator[0] == '*':
-            return eval_global(left_expression) * eval_global(right_expression)
+            return _eval_global(left_expression) * _eval_global(right_expression)
         elif main_operator[0] == "/":
-            return eval_global(left_expression) // eval_global(right_expression)
+            return _eval_global(left_expression) // _eval_global(right_expression)
         elif main_operator[0] == '==':
-            if eval_global(left_expression) == eval_global(right_expression):
+            if _eval_global(left_expression) == _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
-                # return eval_global(left_expression) == eval_global(right_expression)
+                # return _eval_global(left_expression) == _eval_global(right_expression)
         elif main_operator[0] == '!=':
-            if eval_global(left_expression) != eval_global(right_expression):
+            if _eval_global(left_expression) != _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == '<':
-            if eval_global(left_expression) < eval_global(right_expression):
+            if _eval_global(left_expression) < _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == '>':
-            if eval_global(left_expression) > eval_global(right_expression):
+            if _eval_global(left_expression) > _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == '<=':
-            if eval_global(left_expression) <= eval_global(right_expression):
+            if _eval_global(left_expression) <= _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == '>=':
-            if eval_global(left_expression) >= eval_global(right_expression):
+            if _eval_global(left_expression) >= _eval_global(right_expression):
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == 'and':
-            if eval_global(left_expression) == eval_global(right_expression) == 'true':
+            if _eval_global(left_expression) == _eval_global(right_expression) == 'true':
                 return "true"
             else:
                 return "false"
         elif main_operator[0] == 'or':
-            if eval_global(left_expression) == "true" or eval_global(right_expression) == 'true':
+            if _eval_global(left_expression) == "true" or _eval_global(right_expression) == 'true':
                 return "true"
             else:
                 return "false"
-                # def eval_variable(expression: list):
-                #     """Evaluates the variables."""
-                #     TODO pas fini
-                #     size = len(expression)
-                #
-                #     i = 0
-                #     while i < size:
-                #         if expression[i][0] == "variable":
-                #             eval_exp = first_eval()
 
 
 def ext_eval_global(expression_str: str):
     """Evaluates an expression (boolean, integer or string), where the input is a string."""
-    return first_eval(parse(expression_str))
+    return _first_eval(parse(expression_str))
 
 
 def find_operator(expression):
-    """Find the operator where to split an integer expression in two operands."""
+    """Find the operator where to split an integer expression in two operands. We check from the end of the expression
+    to the beggining (left associativity, from the lowest priority operator to the highest, ignoring operators in 
+    factors (between parenthesis)."""
     parenthesis = 0
-    # Check for + or -
     for j in range(6, -1, -1):
         for i in range(len(expression) - 1, -1, -1):
             if expression[i][1] == "parenthesis":
@@ -178,26 +161,35 @@ def find_operator(expression):
 
 
 if __name__ == "__main__":
-    import logger_conf
+    import logging
+    from sys import stdout
 
-    logger = logger_conf.Log.logger
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler(stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] : %(message)s")
+    formatter.datefmt = "%H:%M:%S"
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logger.info("Starting logger from module.")
 
-    print(ext_eval_global("'Hi' < 'Hello'"))
-    # print(ext_eval_global("false and false"))
-    # print(ext_eval_global("false and false"))
-    # print(ext_eval_global("true and false"))
-    # print(ext_eval_global("true and true"))
-    # print(ext_eval_global("false and true"))
-    # print(ext_eval_global("false or false"))
-    # print(ext_eval_global("true or false"))
-    # print(ext_eval_global("true or true"))
-    # print(ext_eval_global("false or true"))
-    # print(ext_eval_global("not true"))
-    # print(ext_eval_global("not false"))
-    # print(ext_eval_global("not not true"))
-    # print(ext_eval_global("not not false"))
-    # print(ext_eval_global("not not not true"))
-    # print(ext_eval_global("not not not false"))
+    # print(ext_eval_global("'Hi' < 'Hello'"))
+    print(ext_eval_global("false and false"))
+    print(ext_eval_global("false and false"))
+    print(ext_eval_global("true and false"))
+    print(ext_eval_global("true and true"))
+    print(ext_eval_global("false and true"))
+    print(ext_eval_global("false or false"))
+    print(ext_eval_global("true or false"))
+    print(ext_eval_global("true or true"))
+    print(ext_eval_global("false or true"))
+    print(ext_eval_global("not true"))
+    print(ext_eval_global("not false"))
+    print(ext_eval_global("not not true"))
+    print(ext_eval_global("not not false"))
+    print(ext_eval_global("not not not true"))
+    print(ext_eval_global("not not not false"))
     #
     # print(ext_eval_global("-35 == (4+6)-5*9"))
     # print(ext_eval_global("1==2"))
@@ -234,9 +226,9 @@ if __name__ == "__main__":
     #         ("((1+(2*3))*(4*5))", "140"),
     #         ("(4+6)-5*9", "-35")]
     # for e in range(len(test)):
-    #     if str(eval_global(parse(test[e][0]))) == str(test[e][1]):
+    #     if str(_eval_global(parse(test[e][0]))) == str(test[e][1]):
     #         logger.info(f"Succes {e}: {test[e][0]} = {test[e][1]}")
     #     else:
     #         logger.error(f"Failure {e}: {test[e][0]} != {test[e][1]}")
-    #         logger.info(f" => Result: {eval_global(parse(test[e][0]))}")
+    #         logger.info(f" => Result: {_eval_global(parse(test[e][0]))}")
     #         logger.info(f" => eval : {eval(test[e][0])}")

@@ -1,7 +1,6 @@
 import unittest
 
 from eval_global import ext_eval_global
-from parse import parse
 
 
 class TestEval(unittest.TestCase):
@@ -47,7 +46,7 @@ class TestEval(unittest.TestCase):
                 ("true", "true"),
                 ("true or false and false", "true"),
                 ("(true or false) and false", "false"),
-                ("not false and not false","true"),
+                ("not false and not false", "true"),
                 ("1<0", "false"),
 
                 ]

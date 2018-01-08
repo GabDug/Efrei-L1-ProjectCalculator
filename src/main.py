@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from eval_global import ext_eval_global
 import traceback
+
 import logger_conf
+from eval_global import ext_eval_global
 
 logger = logger_conf.Log.logger
 

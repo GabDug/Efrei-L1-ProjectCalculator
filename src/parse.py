@@ -149,6 +149,7 @@ if __name__ == "__main__":
     # logger.info(parse("'Salut'"))
     # logger.info(parse("'Salut'+'toi'"))
     # logger.info(parse("'Salut+'toi'"))
+    logger.info((parse("3+(4*(4-8))")))
     logger.info(parse("3+4*2"))
     logger.info(parse("248+345"))
     logger.info(parse("(3 + 2) * 4"))

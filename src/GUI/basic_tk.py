@@ -1,13 +1,7 @@
-import os
-import sys
 import tkinter as tk
 import tkinter.ttk as ttk
-from threading import Lock
-from tkinter import TOP, BOTH, END, INSERT, SEL, SEL_FIRST, SEL_LAST
-from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
 
-from eval_global import ext_eval_global
 import logger_conf
 
 logger = logger_conf.Log.logger

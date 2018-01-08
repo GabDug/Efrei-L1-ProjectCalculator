@@ -8,7 +8,7 @@
 
 Introduction
 ------------
-
+- We tried to respect Python writting (conventions, style, philosophy...). Ex: _ for private
 
 
 Architecture of the calculator
