@@ -3,6 +3,8 @@ from parse import parse, remove_parenthesis
 from os import system, name
 from variable import variable_init
 
+unauthorized_var = ("exit", "clear", "not", "and", "or", "true", "false")
+
 if __name__ != "__main__":
     import logging
 
@@ -26,7 +28,7 @@ def _single_element(element: tuple, variable_list):
         elif element[0] in variable_list:
             return variable_list[element[0]]
         else:
-            raise Exception(f"Error: unknown variable ('{element[0]}')")
+            return "Unknown variable"
     elif element[1] == "integer":
         return element[0]
     elif element[1] == "string":
@@ -149,17 +151,18 @@ def _eval_global(expression: list, variable_list):
             else:
                 return "false"
         elif main_operator[0] == 'or':
-            if _eval_global(left_expression, variable_list) == "true" or _eval_global(right_expression,
-                                                                                      variable_list) == 'true':
+            if _eval_global(left_expression, variable_list) == "true" or _eval_global(right_expression, variable_list) == 'true':
                 return "true"
             else:
                 return "false"
-        elif main_operator[0] == '=' and left_expression[0][1] == "variable" and variable_list is not None:
+        elif main_operator[0] == '=' and left_expression[0][1] == "variable":
+            if left_expression[0][0] in unauthorized_var:
+                raise Exception("Error: wrong variable name")
             variable_list[left_expression[0][0]] = _eval_global(right_expression, variable_list)
             return ""
 
 
-def ext_eval_global(expression_str: str, variable_list=None):
+def ext_eval_global(expression_str: str, variable_list):
     """Evaluates an expression (boolean, integer or string), where the input is a string."""
     return _first_eval(parse(expression_str), variable_list)
 
@@ -179,6 +182,7 @@ def find_operator(expression):
             elif expression[i][1] == "operator":
                 if expression[i][2] == j and parenthesis == 0:
                     return i
+
 
 
 if __name__ == "__main__":
