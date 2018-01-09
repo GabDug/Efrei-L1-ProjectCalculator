@@ -1,6 +1,7 @@
 # from eval_str import eval_str
 from parse import parse, remove_parenthesis
 from os import system, name
+from variable import variable_init
 
 
 if __name__ != "__main__":
@@ -46,6 +47,9 @@ def _first_eval(expression: list, variable_list):
         raise Exception('Error: Expression is empty.')
     elif size == 1:
         return _single_element(expression[0], variable_list)
+    elif size == 3:
+        variable_init(expression, variable_list)
+        return _eval_global(expression, variable_list)
     else:
         return _eval_global(expression, variable_list)
 
