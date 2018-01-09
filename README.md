@@ -25,4 +25,5 @@ TODO
 - 2.1.4. Promoting to String Types
 - 2.2. Variables (Assignment, Substitution)
 - 2.3. Error Handling (Incomplete)
+  - Missing: Type mismatch, unknown variable 
 - \3. Bonus Features (Conf File?)

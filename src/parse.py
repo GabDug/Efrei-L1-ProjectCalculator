@@ -23,27 +23,26 @@ def _expression_to_list(expression: str) -> list:
         # logger.debug("=> ", tokens)
         if expression[i] in [" ", "\n", "\r"]:
             i += 1
-            continue
-        if expression[i] in "+-":
+        elif expression[i] in "+-":
             tokens.append((expression[i], "operator", 2))
             i += 1
-            continue
-        if expression[i] in "/*":
+        elif expression[i] in "/*":
             tokens.append((expression[i], "operator", 1))
             i += 1
-            continue
-        if expression[i] in "()":
+        elif expression[i] in "()":
             logger.debug("Parenthesis stack:" + str(parenthesis_stack))
             if expression[i] == "(":
                 parenthesis_stack.append(i)
                 parenthesis_id = i
             elif expression[i] == ")":
+                # If we have a closing parenthesis and no open parenthesis, raise Exception
+                if parenthesis_stack == []:
+                    raise Exception("Error: unmatched parenthesis (')')")
                 parenthesis_id = parenthesis_stack[-1]
                 del parenthesis_stack[-1]
             tokens.append((expression[i], "parenthesis", parenthesis_id))
             i += 1
-            continue
-        if expression[i] in "0123456789":
+        elif expression[i] in "0123456789":
             j = i + 1
             while j < len(expression) and expression[j] in "0123456789":
                 j += 1
@@ -62,29 +61,26 @@ def _expression_to_list(expression: str) -> list:
             else:
                 tokens.append(tup)
             i = j
-            continue
-        if expression[i] in string.ascii_letters:
+        elif expression[i] in string.ascii_letters:
             j = i + 1
             while j < len(expression) and expression[j] in string.ascii_letters + string.digits:
                 j += 1
             if expression[i:j] == "true":
-                tup = (expression[i:j], "boolean")
+                tup = ("true", "boolean")
             elif expression[i:j] == "false":
-                tup = (expression[i:j], "boolean")
+                tup = ("false", "boolean")
             elif expression[i:j] == "not":
-                tup = (expression[i:j], "operator", 4)
+                tup = ("not", "operator", 4)
             elif expression[i:j] == "and":
-                tup = (expression[i:j], "operator", 5)
+                tup = ("and", "operator", 5)
             elif expression[i:j] == "or":
-                tup = (expression[i:j], "operator", 6)
-
+                tup = ("or", "operator", 6)
             else:
                 tup = (expression[i:j], "variable")
 
             tokens.append(tup)
             i = j
-            continue
-        if expression[i] in "<>=!":
+        elif expression[i] in "<>=!":
             j = i + 1
             while j < len(expression) and expression[j] == "=":
                 j += 1
@@ -96,8 +92,7 @@ def _expression_to_list(expression: str) -> list:
                 tup = (expression[i:j], "unknown")
             tokens.append(tup)
             i = j
-            continue
-        if expression[i] in "'\"":
+        elif expression[i] in "'\"":
             j = i + 1
             while j < len(expression) and expression[j] != expression[i]:
                 j += 1
@@ -109,7 +104,10 @@ def _expression_to_list(expression: str) -> list:
             tokens.append((expression[i + 1:j], "string"))
             # restart after the ending symbol (' or "...)
             i = j + 1
-            continue
+        else:
+            raise Exception(f"Error: unknown character {expression[i]} at {i}.")
+    if parenthesis_stack != []:
+        raise Exception("Error: unmatched parenthesis ('(')")
     return tokens
 
 
