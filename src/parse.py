@@ -8,7 +8,7 @@ if __name__ != "__main__":
     logger = logging.getLogger(__name__)
 
 
-def _expression_to_list(expression: str) -> list:
+def _expression_to_list(expression: str): # -> list:
     """Output a list of tokens (tuples) from a string."""
     tokens = []
     parenthesis_stack = []
@@ -111,7 +111,7 @@ def _expression_to_list(expression: str) -> list:
     return tokens
 
 
-def parse(expression: str) -> list:
+def parse(expression: str): # -> list:
     """Parse a string expression to a list of tuples."""
 
     list_expression = _expression_to_list(expression)

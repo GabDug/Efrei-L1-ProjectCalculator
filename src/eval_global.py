@@ -13,6 +13,9 @@ def _single_element(element: tuple):
         if element[0] == "exit":
             logger.info("Exiting...")
             exit()
+        if element[0] == "clear":
+            logger.info("Clear screen")
+            clear()
     elif element[1] == "integer":
         return element[0]
     elif element[1] == "string":
@@ -145,7 +148,7 @@ def ext_eval_global(expression_str: str):
 
 def find_operator(expression):
     """Find the operator where to split an integer expression in two operands. We check from the end of the expression
-    to the beggining (left associativity, from the lowest priority operator to the highest, ignoring operators in 
+    to the beggining (left associativity, from the lowest priority operator to the highest, ignoring operators in
     factors (between parenthesis)."""
     parenthesis = 0
     for j in range(6, -1, -1):
