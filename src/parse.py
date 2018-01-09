@@ -85,7 +85,7 @@ def _expression_to_list(expression: str): # -> list:
             while j < len(expression) and expression[j] == "=":
                 j += 1
             if expression[i:j] == "=":
-                tup = (expression[i:j], "assignment")
+                tup = (expression[i:j], "operator", 7)
             elif expression[i:j] in ["==", "!=", "<=", ">=", "<", ">"]:
                 tup = (expression[i:j], "operator", 3)
             else:

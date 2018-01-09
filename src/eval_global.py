@@ -47,9 +47,9 @@ def _first_eval(expression: list, variable_list):
         raise Exception('Error: Expression is empty.')
     elif size == 1:
         return _single_element(expression[0], variable_list)
-    elif size == 3:
-        variable_init(expression, variable_list)
-        return _eval_global(expression, variable_list)
+    # elif size == 3:
+    #     variable_init(expression, variable_list)
+    #     return _eval_global(expression, variable_list)
     else:
         return _eval_global(expression, variable_list)
 
@@ -154,6 +154,9 @@ def _eval_global(expression: list, variable_list):
                 return "true"
             else:
                 return "false"
+        elif main_operator[0] == '=' and left_expression[0][1] == "variable":
+            variable_list[left_expression[0][0]] = _eval_global(right_expression, variable_list)
+            return ""
 
 
 def ext_eval_global(expression_str: str, variable_list):
@@ -166,7 +169,7 @@ def find_operator(expression):
     to the beggining (left associativity, from the lowest priority operator to the highest, ignoring operators in
     factors (between parenthesis)."""
     parenthesis = 0
-    for j in range(6, -1, -1):
+    for j in range(7, -1, -1):
         for i in range(len(expression) - 1, -1, -1):
             if expression[i][1] == "parenthesis":
                 if expression[i][0] == '(':
@@ -176,6 +179,7 @@ def find_operator(expression):
             elif expression[i][1] == "operator":
                 if expression[i][2] == j and parenthesis == 0:
                     return i
+
 
 
 if __name__ == "__main__":

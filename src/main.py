@@ -19,6 +19,7 @@ print("Welcome to the Calculator.\nUse \"exit\" to exit console or hit enter twi
 exit = False
 
 while True:
+    #print(variable_list) for debug
     exp = input("? ")
 
     # If the user just pressed enter
