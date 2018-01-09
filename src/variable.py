@@ -1,6 +1,6 @@
-
 def find_type(token):
     pass
+
 
 def variable_init(expression, variable_list):
     """initialize variable if needed"""

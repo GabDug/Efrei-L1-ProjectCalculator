@@ -11,6 +11,7 @@ logger = logger_conf.Log.logger
 def clear():
     system('cls' if name == 'nt' else 'clear')
 
+
 variable_list = {}
 
 clear()
@@ -19,7 +20,7 @@ print("Welcome to the Calculator.\nUse \"exit\" to exit console or hit enter twi
 exit = False
 
 while True:
-    #print(variable_list) for debug
+    logger.debug("Variable dic: " + str(variable_list))
     exp = input("? ")
 
     # If the user just pressed enter
@@ -36,7 +37,9 @@ while True:
         if exit:
             exit = False
     try:
-        print(ext_eval_global(exp, variable_list))
+        res = ext_eval_global(exp, variable_list)
+        if res != "":
+            print(res)
     except Exception as e:
         print(e)
         logger.error(str(e))
