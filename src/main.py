@@ -9,7 +9,7 @@ logger = logger_conf.Log.logger
 
 
 def clear():
-    system('cls' if name == 'nt' else 'clear')
+    system('cls' if name == 'nt' else '_clear')
 
 
 variable_list = {}
@@ -32,16 +32,19 @@ while True:
             exit = True
             print("Press enter again to quit.")
             continue
-    # If he has entered a regular expression, reset
+    # If he has entered a not-empty expression, reset
     else:
         if exit:
             exit = False
+
+    # Try to evaluate and print....
     try:
         res = ext_eval_global(exp, variable_list)
         if res != "":
             print(res)
+    # Catch the exception eval raise
     except Exception as e:
-        print(e)
+        print("Error: " + str(e))
         logger.error(str(e))
         logger.error(str(traceback.format_exc()))
 

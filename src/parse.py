@@ -19,7 +19,7 @@ def _expression_to_list(expression: str) -> list:
     while i < length:
         loop_count += 1
         if loop_count > 10000:
-            raise Exception(f"Error: loop limit reached while parsing. Can't parse {expression[i]} at {i}.")
+            raise Exception(f"loop limit reached while parsing. Can't parse {expression[i]} at {i}.")
         # logger.debug("=> ", tokens)
         if expression[i] in [" ", "\n", "\r"]:
             i += 1
@@ -37,7 +37,7 @@ def _expression_to_list(expression: str) -> list:
             elif expression[i] == ")":
                 # If we have a closing parenthesis and no open parenthesis, raise Exception
                 if parenthesis_stack == []:
-                    raise Exception("Error: unmatched parenthesis (')')")
+                    raise Exception("unmatched parenthesis (')')")
                 parenthesis_id = parenthesis_stack[-1]
                 del parenthesis_stack[-1]
             tokens.append((expression[i], "parenthesis", parenthesis_id))
@@ -99,15 +99,15 @@ def _expression_to_list(expression: str) -> list:
             # TODO Check the condition for error, may be invalid
             if j == len(expression) or expression[j] != expression[i]:
                 logger.error("Error: no ending symbol for string starting at " + str(i) + ".")
-                raise Exception("Error: no ending symbol for string starting at " + str(i) + ".")
+                raise Exception("no ending symbol for string starting at " + str(i) + ".")
             # i+1 to j : string without the starting and ending symbol
             tokens.append((expression[i + 1:j], "string"))
             # restart after the ending symbol (' or "...)
             i = j + 1
         else:
-            raise Exception(f"Error: unknown character {expression[i]} at {i}.")
+            raise Exception(f"unknown character {expression[i]} at {i}.")
     if parenthesis_stack != []:
-        raise Exception("Error: unmatched parenthesis ('(')")
+        raise Exception("unmatched parenthesis ('(')")
     return tokens
 
 
@@ -130,7 +130,7 @@ def remove_parenthesis(expression):
             return expression
     except IndexError as e:
         logger.error("Error: index error: " + str(e))
-        raise Exception("Error: missing operand near " + str(expression))
+        raise Exception("missing operand near " + str(expression))
 
 
 if __name__ == "__main__":
