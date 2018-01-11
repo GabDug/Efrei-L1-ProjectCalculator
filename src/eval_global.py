@@ -20,7 +20,7 @@ def _single_element(element: tuple, variable_dic):
         if element[0] == "exit":
             logger.info("Exiting...")
             exit()
-        elif element[0] == "_clear":
+        elif element[0] == "clear":
             logger.info("Clear screen")
             _clear()
             return ""
