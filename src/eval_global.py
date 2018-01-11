@@ -109,7 +109,7 @@ def _eval_global(expression: list, var_dic: dict):
         # [2] is the priority (exists if type operator)
 
         # Integer only operators
-        if main_operator[0] in "/-*":
+        if main_operator[0] in "%/-*":
             if left[1] == right[1] == "integer":
                 if main_operator[0] == '*':
                     return left[0] * right[0], "integer"
@@ -117,6 +117,8 @@ def _eval_global(expression: list, var_dic: dict):
                     return left[0] // right[0], "integer"
                 elif main_operator[0] == '-':
                     return left[0] - right[0], "integer"
+                elif main_operator[0] == '%':
+                    return left[0] % right[0], "integer"
             else:
                 raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
 

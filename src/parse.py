@@ -26,7 +26,7 @@ def _expression_to_list(expression: str) -> list:
         elif expression[i] in "+-":
             tokens.append((expression[i], "operator", 2))
             i += 1
-        elif expression[i] in "/*":
+        elif expression[i] in "/*%":
             tokens.append((expression[i], "operator", 1))
             i += 1
         elif expression[i] in "()":
