@@ -82,7 +82,6 @@ def _eval_global(expression: list, var_dic: dict):
                 left_expression.append(("false", "boolean"))
             else:
                 left_expression.append(("true", "boolean"))
-            print(_eval_global(left_expression, var_dic))
             return _eval_global(left_expression, var_dic)
 
     # Binary infix operators
@@ -121,57 +120,70 @@ def _eval_global(expression: list, var_dic: dict):
             else:
                 raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
 
-        elif main_operator[0] == '+':
-            if left[1] != right[1]:
-                if left[1] == "string" and right[1] == "integer":
-                    return left[0] + str(right[0]), "string"
-                elif left[1] == "integer" and right[1] == "string":
-                    return str(left) + right, "string"
-                else:
-                    raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
-            else:
-                return left[0] + right[0], "integer"
-
-        elif main_operator[0] == '==':
-            if left[0] == right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-        elif main_operator[0] == '!=':
-            if left[0] != right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-        elif main_operator[0] == '<':
-            if left[0] < right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-        elif main_operator[0] == '>':
-            if left[0] > right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-        elif main_operator[0] == '<=':
-            if left[0] <= right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-        elif main_operator[0] == '>=':
-            if left[0] >= right[0]:
-                return "true", "boolean"
-            else:
-                return "false", "boolean"
-
         # Boolean only
-        elif left[1] == right[1] == "boolean":
-            if main_operator[0] == 'and':
-                if left[0] == right[0] == 'true':
+        elif main_operator[0] in ["and", "or"]:
+            if left[1] == right[1] == "boolean":
+                if main_operator[0] == "and":
+                    if left[0] == right[0] == 'true':
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+                elif main_operator[0] == 'or':
+                    print("left0 " + str(left[0]))
+                    print("rught0 " + str(right[0]))
+
+                    if left[0] == "true" or right[0] == 'true':
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+            else:
+                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+
+        # String and int only
+        elif main_operator[0] in ["+", "<", ">", "<=", ">="]:
+            if (left[1] == right[1]) and (left[1] == "integer" or left[1] == "string"):
+                if main_operator[0] == '+':
+                    if left[1] != right[1]:
+                        if left[1] == "string" and right[1] == "integer":
+                            return left[0] + str(right[0]), "string"
+                        elif left[1] == "integer" and right[1] == "string":
+                            return str(left) + right, "string"
+                        else:
+                            raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+                    else:
+                        return left[0] + right[0], "integer"
+                elif main_operator[0] == '<':
+                    if left[0] < right[0]:
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+                elif main_operator[0] == '>':
+                    if left[0] > right[0]:
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+                elif main_operator[0] == '<=':
+                    if left[0] <= right[0]:
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+                elif main_operator[0] == '>=':
+                    if left[0] >= right[0]:
+                        return "true", "boolean"
+                    else:
+                        return "false", "boolean"
+            else:
+                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+
+        # Working with all types
+        elif main_operator[0] in ["==", "!="]:
+            if main_operator[0] == '==':
+                if left[0] == right[0]:
                     return "true", "boolean"
                 else:
                     return "false", "boolean"
-            elif main_operator[0] == 'or':
-                if left[0] == "true" or right[0] == 'true':
+            elif main_operator[0] == '!=':
+                if left[0] != right[0]:
                     return "true", "boolean"
                 else:
                     return "false", "boolean"
@@ -210,6 +222,7 @@ def find_operator(expression):
                     return i
 
 
+# FOR DEBUGGING PURPOSE ONLY
 if __name__ == "__main__":
     import logging
     from sys import stdout
