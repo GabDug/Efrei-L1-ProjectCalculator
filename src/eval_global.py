@@ -119,7 +119,7 @@ def _eval_global(expression: list, var_dic: dict):
                 elif main_operator[0] == '-':
                     return left[0] - right[0], "integer"
             else:
-                raise Exception(f"type mismatch ({left_type} {main_operator[0]} {right_type})")
+                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
 
         elif main_operator[0] == '+':
             if left[1] != right[1]:
@@ -128,7 +128,7 @@ def _eval_global(expression: list, var_dic: dict):
                 elif left[1] == "integer" and right[1] == "string":
                     return str(left) + right, "string"
                 else:
-                    raise Exception(f"type mismatch ({left_type} {main_operator[0]} {right_type})")
+                    raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
             else:
                 return left[0] + right[0], "integer"
 
