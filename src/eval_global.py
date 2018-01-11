@@ -172,8 +172,13 @@ def _eval_global(expression: list, var_dic: dict):
                     return str(left) + right, "string"
                 else:
                     raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
-            else:
+            elif left[1] == right[1] == "integer":
                 return left[0] + right[0], "integer"
+            elif left[1] == right[1] == "string":
+                return left[0] + right[0], "string"
+            else:
+                raise Exception("unable to cast")
+
 
         # Working with all types
         elif main_operator[0] in ["==", "!="]:
