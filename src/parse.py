@@ -131,6 +131,7 @@ def remove_parenthesis(expression):
         raise Exception("missing operand near " + str(expression))
 
 
+# FOR DEBUGGING PURPOSE ONLY
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -142,29 +143,6 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    # logger.info(parse("'Salut'"))
+    logger.info(parse("1 === 1"))
     # logger.info(parse("'Salut'+'toi'"))
     # logger.info(parse("'Salut+'toi'"))
-    logger.info((parse("3+(4*(4-8))")))
-    logger.info(parse("3+4*2"))
-    logger.info(parse("248+345"))
-    logger.info(parse("(3 + 2) * 4"))
-    logger.info(parse("3 - 4"))
-    logger.info(parse("-4 + 3"))
-    logger.info(parse("(-1) + -1 + (-1 - -1)"))
-    logger.info(parse("(3+254)* 44 "))
-    logger.info(parse("'Yo'"))
-    logger.info(parse("'Hey''You'"))
-    logger.info(parse("'Test' + 'os'"))
-    # logger.info(parse("'test"))
-    logger.info(parse("((1))"))
-    logger.info(parse("(1)*(2)"))
-    logger.info(parse("(1+(2*3))"))
-    logger.info(parse("(1+(2*3))(4*5)"))
-    logger.info(parse("((1+(2*3))(4*5))"))
-    logger.info(parse("(4+6)-5*9"))
-    logger.info(parse("true"))
-    logger.info(parse("true and false"))
-    logger.info(parse("1 < 5 and 5 < 10"))
-    logger.info(parse("1+ 2 +3 == 2 * 3"))
-    logger.info(parse("test = 2 * 3"))

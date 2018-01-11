@@ -4,6 +4,8 @@ from eval_global import ext_eval_global
 
 
 class TestEval(unittest.TestCase):
+    """We run some tests, with an expression and the expected output."""
+
     def test_integers(self):
         test = [("1", "1"),
                 ("(1)", "1"),
@@ -48,7 +50,6 @@ class TestEval(unittest.TestCase):
                 ("(true or false) and false", "false"),
                 ("not false and not false", "true"),
                 ("1<0", "false"),
-
                 ]
 
         for e in range(len(test)):
