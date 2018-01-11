@@ -14,7 +14,7 @@ def _clear():
     system('cls' if name == 'nt' else 'clear')
 
 
-def _single_element(element: tuple, variable_dic):
+def _check_variable(element: tuple, variable_dic):
     """Evaluate a single token. Used when there is only one token."""
     if element[1] == "variable":
         if element[0] == "exit":
@@ -28,11 +28,7 @@ def _single_element(element: tuple, variable_dic):
             return variable_dic[element[0]]
         else:
             raise Exception(f"unknown variable ('{element[0]}')")
-    elif element[1] == "integer":
-        return element
-    elif element[1] == "string":
-        return element
-    elif element[1] == "boolean":
+    else:
         return element
 
 
@@ -49,7 +45,7 @@ def _eval_global(expression: list, var_dic: dict):
     # If expression is single-operand (exit condition of recursivity)
     if length == 1:
         logger.debug("  Return:" + str(expression))
-        return _single_element(expression[0], var_dic)
+        return _check_variable(expression[0], var_dic)
 
     # Expression Shape: left-expression main-operator right-expression
     operator_index = find_operator(expression)
@@ -71,18 +67,22 @@ def _eval_global(expression: list, var_dic: dict):
 
     # Processing the prefix unary operator first, right side of expression
     if expression[operator_index][0] == "not":
-        logger.debug("  Processing not")
-        if left_expression is None or left_expression == []:
-            if _eval_global(right_expression, var_dic)[0] == "true":
-                return ("false", "boolean")
+        right = _eval_global(right_expression, var_dic)
+        if right[1] == "boolean":
+            if left_expression is None or left_expression == []:
+                if right[0] == "true":
+                    return ("false", "boolean")
+                else:
+                    return ("true", "boolean")
             else:
-                return ("true", "boolean")
+                if right[0] == "true":
+                    left_expression.append(("false", "boolean"))
+                else:
+                    left_expression.append(("true", "boolean"))
+                return _eval_global(left_expression, var_dic)
         else:
-            if _eval_global(right_expression, var_dic)[0] == "true":
-                left_expression.append(("false", "boolean"))
-            else:
-                left_expression.append(("true", "boolean"))
-            return _eval_global(left_expression, var_dic)
+            raise Exception(f"type mismatch ({main_operator[0]} {right[1]})")
+
 
     # Binary infix operators
     else:
@@ -193,14 +193,18 @@ def _first_eval(expression: list, variable_dic):
     if size == 0:
         raise Exception('Expression is empty.')
     elif size == 1:
-        return _single_element(expression[0], variable_dic)
+        return _check_variable(expression[0], variable_dic)
     else:
         return _eval_global(expression, variable_dic)
 
 
 def ext_eval_global(expression_str: str, variable_dic=None):
     """Evaluates an expression (boolean, integer or string), where the input is a string."""
-    return _first_eval(parse(expression_str), variable_dic)[0]
+    eval = _first_eval(parse(expression_str), variable_dic)
+    if eval is None:
+        return ""
+    else:
+        return eval[0]
 
 
 def find_operator(expression):
@@ -228,14 +232,14 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler(stdout)
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel(logging.INFO)
     formatter = logging.Formatter("%(asctime)s [%(levelname)s] : %(message)s")
     formatter.datefmt = "%H:%M:%S"
     ch.setFormatter(formatter)
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    # dict_var = {}
-    # print(ext_eval_global("a = 10", dict_var))
-    # print(ext_eval_global("a + 1", dict_var))
-    print(ext_eval_global("'e'+1"))
+    dict_var = {}
+    print(ext_eval_global("a = 10", dict_var))
+    print(ext_eval_global("a + 1", dict_var))
+    print(ext_eval_global("true and false and not true or false", dict_var))

@@ -252,16 +252,13 @@ class TkApp(tk.Frame):
         self.menubar = tk.Menu(self)
 
         menu = tk.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Calculator App", menu=menu)
+        self.menubar.add_cascade(label="Project Calculator", menu=menu)
         menu.add_command(label="About", command=self.about)
         menu.add_command(label="Exit", command=self.exit)
 
         menu = tk.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Edit", menu=menu)
-        menu.add_command(label="Cut", command=self.cut)
-        menu.add_command(label="Copy", command=self.copy)
-        menu.add_command(label="Paste", command=self.paste)
-        menu.add_command(label="Clear ALL", command=self.clear)
+        self.menubar.add_cascade(label="Clear", menu=menu)
+        menu.add_command(label="Are you sure to clear?", command=self.clear)
 
         self.master.config(menu=self.menubar)
         self.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -281,29 +278,12 @@ class TkApp(tk.Frame):
     def clear(self):
         self.tkcon.clear()
 
-    def cut(self):
-        messagebox.showwarning(
-            "Not implemented",
-            "The 'cut' method is not implemented yet"
-        )
-
-    def copy(self):
-        messagebox.showwarning(
-            "Not implemented",
-            "The 'copy' method is not implemented yet"
-        )
-
-    def paste(self):
-        messagebox.showwarning(
-            "Not implemented",
-            "The 'paste' method is not implemented yet"
-        )
 
     def about(self):
         messagebox.showinfo(
             "About Project Calculator",
             "This project was created by Gabriel Dugny and Thibault Lepez.\n"
-            "Tkinter module is created using pytkcon by samyzaf."
+            "For the GUI we used pytkcon by samyzaf (Open source library)."
         )
 
 

@@ -143,6 +143,5 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    logger.info(parse("1 === 1"))
-    # logger.info(parse("'Salut'+'toi'"))
-    # logger.info(parse("'Salut+'toi'"))
+    logger.info(parse("1 + 3 * 4 - 5"))
+    logger.info(parse("(1 + 3 * 5 - 6) + (4 / 7)"))
