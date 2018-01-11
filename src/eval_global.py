@@ -36,6 +36,16 @@ def _single_element(element: tuple, variable_dic):
         return element[0]
 
 
+def _get_single_element_type(element):
+    """Returns the type of an element (bool, str, int...)"""
+    if element == "false" or element == "true":
+        return "boolean"
+    elif isinstance(element, int):
+        return "integer"
+    else:
+        return "string"
+
+
 def _eval_global(expression: list, var_dic: dict):
     """Evaluates an expression, where the input is a parsed list of tokens."""
     expression = remove_parenthesis(expression)
@@ -87,9 +97,24 @@ def _eval_global(expression: list, var_dic: dict):
     # Binary infix operators
     else:
         if main_operator[0] == '+':
-            return _eval_global(left_expression, var_dic) + _eval_global(right_expression, var_dic)
+            left = _eval_global(left_expression, var_dic)
+            left_type = _get_single_element_type(left)
+            right = _eval_global(right_expression, var_dic)
+            right_type = _get_single_element_type(right)
+            if left_type != right_type:
+                if left_type == "string" and right_type == "integer":
+                    return left + str(right)
+                elif left_type == "integer" and right_type == "string":
+                    return str(left) + right
+                else:
+                    raise Exception(f"type mismatch ({left_type} {main_operator[0]} {right_type})")
+            else:
+                return left + right
         elif main_operator[0] == '-':
-            return _eval_global(left_expression, var_dic) - _eval_global(right_expression, var_dic)
+            try:
+                return _eval_global(left_expression, var_dic) - _eval_global(right_expression, var_dic)
+            except TypeError:
+                raise Exception(f"type mismatch ({left_type} {main_operator[0]} {right_type})")
         elif main_operator[0] == '*':
             return _eval_global(left_expression, var_dic) * _eval_global(right_expression, var_dic)
         elif main_operator[0] == "/":
@@ -195,7 +220,7 @@ if __name__ == "__main__":
     logger.info("Starting logger from module.")
 
     # print(ext_eval_global("'Hi' < 'Hello'"))
-    print(ext_eval_global("1 1"))
+    print(ext_eval_global("'2'+ 1"))
     # print(ext_eval_global("false and false"))
     # print(ext_eval_global("false and false"))
     # print(ext_eval_global("true and false"))

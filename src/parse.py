@@ -49,7 +49,6 @@ def _expression_to_list(expression: str) -> list:
             tup = (int(expression[i:j]), "integer")
 
             # Here we check for negative numbers
-            # TODO Stop working with tuple, better code
             if i != 0 and tokens[-1][0] == "-":
                 if (i == 1 or tokens[-2][1] != "integer") and not (i > 2 and tokens[-2][0] == ")"):
                     # remove the operator
@@ -96,7 +95,6 @@ def _expression_to_list(expression: str) -> list:
             j = i + 1
             while j < len(expression) and expression[j] != expression[i]:
                 j += 1
-            # TODO Check the condition for error, may be invalid
             if j == len(expression) or expression[j] != expression[i]:
                 logger.error("Error: no ending symbol for string starting at " + str(i) + ".")
                 raise Exception("no ending symbol for string starting at " + str(i) + ".")
