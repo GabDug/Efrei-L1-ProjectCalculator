@@ -18,11 +18,3 @@ License
 -------
 This project is licensed under the terms of the GNU AGPLv3 license.
 
-
-TODO
-----
-- Everything type-related: errors, casting, concatenation
-- 2.1.4. Promoting to String Types
-- 2.3. Error Handling (Incomplete)
-  - Missing: Type mismatch
-- \3. Bonus Features (Conf File?)

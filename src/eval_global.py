@@ -7,11 +7,11 @@ if __name__ != "__main__":
 
     logger = logging.getLogger(__name__)
 
-unauthorized_var = ("exit", "_clear", "not", "and", "or", "true", "false")
+unauthorized_var = ("exit", "clear", "not", "and", "or", "true", "false")
 
 
 def _clear():
-    system('cls' if name == 'nt' else '_clear')
+    system('cls' if name == 'nt' else 'clear')
 
 
 def _single_element(element: tuple, variable_dic):
@@ -183,9 +183,9 @@ def _first_eval(expression: list, variable_dic):
         return _eval_global(expression, variable_dic)
 
 
-def ext_eval_global(expression_str: str, variable_list=None):
+def ext_eval_global(expression_str: str, variable_dic=None):
     """Evaluates an expression (boolean, integer or string), where the input is a string."""
-    return _first_eval(parse(expression_str), variable_list)
+    return _first_eval(parse(expression_str), variable_dic)
 
 
 def find_operator(expression):
@@ -219,62 +219,4 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    # print(ext_eval_global("'Hi' < 'Hello'"))
-    print(ext_eval_global("'2'+ 1"))
-    # print(ext_eval_global("false and false"))
-    # print(ext_eval_global("false and false"))
-    # print(ext_eval_global("true and false"))
-    # print(ext_eval_global("true and true"))
-    # print(ext_eval_global("false and true"))
-    # print(ext_eval_global("false or false"))
-    # print(ext_eval_global("true or false"))
-    # print(ext_eval_global("true or true"))
-    # print(ext_eval_global("false or true"))
-    # print(ext_eval_global("not true"))
-    # print(ext_eval_global("not false"))
-    # print(ext_eval_global("not not true"))
-    # print(ext_eval_global("not not false"))
-    # print(ext_eval_global("not not not true"))
-    # print(ext_eval_global("not not not false"))
-    #
-    # print(ext_eval_global("-35 == (4+6)-5*9"))
-    # print(ext_eval_global("1==2"))
-    # print(ext_eval_global("1+2 == 3"))
-    # print(ext_eval_global("2 == 1+1"))
-    # print(ext_eval_global("(false)"))
-    # print(ext_eval_global("true"))
-    # test = [("1",),
-    #         ("(1)",),
-    #         ("1 - 2",),
-    #         ("4 / 2 * 3",),
-    #         ("4 * 2 / 3",),
-    #         ("(1 + 2) * 3",),
-    #         ("-1 + -1 + (-1 - -1)",),
-    #         ("((1+(2*3))*(4*5))",),
-    #         ("(4+6)-5*9",)]
-    # for e in range(len(test)):
-    #     # if str(parse(test[e][0])) == str(test[e][1]):
-    #     logger.warning(f"Clean {e}: {test[e][0]}")
-    #
-    #     logger.warning(f" => Result: {(parse(test[e][0]))}")
-    #
-    # test = [("1", "1"),
-    #         ("(1)", "1"),
-    #         ("1 - 2", "-1"),
-    #         ("4 / 2 * 3", "6"),
-    #         ("4 * 2 / 3", "2"),
-    #         ("1 + 2 * 3", "7"),
-    #         ("(1 + 2) * 3", "9"),
-    #         ("-1 + -1 + (-1 - -1)", "-2"),
-    #         ("-1 + -1 - (-1 - -1)", "-2"),
-    #         ("(-1 + -1 - (-1 - -1))", "-2"),
-    #         ("((-1 + -1 - (-1 - -1)))", "-2"),
-    #         ("((1+(2*3))*(4*5))", "140"),
-    #         ("(4+6)-5*9", "-35")]
-    # for e in range(len(test)):
-    #     if str(_eval_global(parse(test[e][0]))) == str(test[e][1]):
-    #         logger.info(f"Succes {e}: {test[e][0]} = {test[e][1]}")
-    #     else:
-    #         logger.error(f"Failure {e}: {test[e][0]} != {test[e][1]}")
-    #         logger.info(f" => Result: {_eval_global(parse(test[e][0]))}")
-    #         logger.info(f" => eval : {eval(test[e][0])}")
+    print(ext_eval_global("'Test' + 'string'"))
