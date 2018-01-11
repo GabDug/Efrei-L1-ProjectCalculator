@@ -5,6 +5,7 @@ class Log:
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
+
     # Terminal log
     ch = logging.StreamHandler(stdout)
     ch.setLevel(logging.CRITICAL)
