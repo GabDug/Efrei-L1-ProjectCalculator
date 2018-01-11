@@ -129,9 +129,6 @@ def _eval_global(expression: list, var_dic: dict):
                     else:
                         return "false", "boolean"
                 elif main_operator[0] == 'or':
-                    print("left0 " + str(left[0]))
-                    print("rught0 " + str(right[0]))
-
                     if left[0] == "true" or right[0] == 'true':
                         return "true", "boolean"
                     else:
@@ -140,19 +137,9 @@ def _eval_global(expression: list, var_dic: dict):
                 raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
 
         # String and int only
-        elif main_operator[0] in ["+", "<", ">", "<=", ">="]:
+        elif main_operator[0] in ["<", ">", "<=", ">="]:
             if (left[1] == right[1]) and (left[1] == "integer" or left[1] == "string"):
-                if main_operator[0] == '+':
-                    if left[1] != right[1]:
-                        if left[1] == "string" and right[1] == "integer":
-                            return left[0] + str(right[0]), "string"
-                        elif left[1] == "integer" and right[1] == "string":
-                            return str(left) + right, "string"
-                        else:
-                            raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
-                    else:
-                        return left[0] + right[0], "integer"
-                elif main_operator[0] == '<':
+                if main_operator[0] == '<':
                     if left[0] < right[0]:
                         return "true", "boolean"
                     else:
@@ -174,6 +161,17 @@ def _eval_global(expression: list, var_dic: dict):
                         return "false", "boolean"
             else:
                 raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+
+        elif main_operator[0] == '+':
+            if left[1] != right[1]:
+                if left[1] == "string" and (right[1] == "integer" or right[1] == "boolean"):
+                    return left[0] + str(right[0]), "string"
+                elif (left[1] == "integer" or left[1] == "boolean") and right[1] == "string":
+                    return str(left) + right, "string"
+                else:
+                    raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+            else:
+                return left[0] + right[0], "integer"
 
         # Working with all types
         elif main_operator[0] in ["==", "!="]:
@@ -237,6 +235,7 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    dict_var = {}
-    print(ext_eval_global("a = 10", dict_var))
-    print(ext_eval_global("a + 1", dict_var))
+    # dict_var = {}
+    # print(ext_eval_global("a = 10", dict_var))
+    # print(ext_eval_global("a + 1", dict_var))
+    print(ext_eval_global("'e'+1"))
