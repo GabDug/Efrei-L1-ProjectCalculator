@@ -49,16 +49,8 @@ def _expression_to_list(expression: str) -> list:
             tup = (int(expression[i:j]), "integer")
 
             # Here we check for negative numbers
-            if i != 0 and tokens[-1][0] == "-":
-                if (i == 1 or tokens[-2][1] != "integer") and not (i > 2 and tokens[-2][0] == ")"):
-                    # remove the operator
-                    del tokens[-1]
-                    tup = (-1 * tup[0], tup[1])
-                    tokens.append(tup)
-                else:
-                    tokens.append(tup)
-            else:
-                tokens.append(tup)
+
+            tokens.append(tup)
             i = j
         elif expression[i] in string.ascii_letters:
             j = i + 1
@@ -106,6 +98,7 @@ def _expression_to_list(expression: str) -> list:
             raise Exception(f"unknown character {expression[i]} at {i}.")
     if parenthesis_stack != []:
         raise Exception("unmatched parenthesis ('(')")
+    print(tokens)
     return tokens
 
 
