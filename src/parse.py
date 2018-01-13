@@ -23,8 +23,23 @@ def _expression_to_list(expression: str) -> list:
         # logger.debug("=> ", tokens)
         if expression[i] in [" ", "\n", "\r"]:
             i += 1
-        elif expression[i] in "+-":
+        elif expression[i] == "+":
             tokens.append((expression[i], "operator", 2))
+            i += 1
+        elif expression[i] == "-":
+            # If first: unary operator
+            if len(tokens) == 0:
+                tokens.append((expression[i], "operator", 0))
+            # If previous term isn't integer
+            elif len(tokens) >= 1 and (tokens[-1][1] != "integer" and tokens[-1][0] != ")"):
+                # Add unary operator with high priority
+                tokens.append((expression[i], "operator", 0))
+                #     if i != 0 and tokens[-1][0] == "-":
+                #         if (i == 1 or tokens[-2][1] != "integer") and not (i > 2 and tokens[-2][0] == ")"):
+                #
+            else:
+                tokens.append((expression[i], "operator", 2))
+            # tokens.append((expression[i], "operator", 2))
             i += 1
         elif expression[i] in "/*%":
             tokens.append((expression[i], "operator", 1))
@@ -46,19 +61,7 @@ def _expression_to_list(expression: str) -> list:
             j = i + 1
             while j < len(expression) and expression[j] in "0123456789":
                 j += 1
-            tup = (int(expression[i:j]), "integer")
-
-            # Here we check for negative numbers
-            if i != 0 and tokens[-1][0] == "-":
-                if (i == 1 or tokens[-2][1] != "integer") and not (i > 2 and tokens[-2][0] == ")"):
-                    # remove the operator
-                    del tokens[-1]
-                    tup = (-1 * tup[0], tup[1])
-                    tokens.append(tup)
-                else:
-                    tokens.append(tup)
-            else:
-                tokens.append(tup)
+            tokens.append((int(expression[i:j]), "integer"))
             i = j
         elif expression[i] in string.ascii_letters:
             j = i + 1
@@ -76,7 +79,6 @@ def _expression_to_list(expression: str) -> list:
                 tup = ("or", "operator", 6)
             else:
                 tup = (expression[i:j], "variable")
-
             tokens.append(tup)
             i = j
         elif expression[i] in "<>=!":
@@ -106,6 +108,7 @@ def _expression_to_list(expression: str) -> list:
             raise Exception(f"unknown character {expression[i]} at {i}.")
     if parenthesis_stack != []:
         raise Exception("unmatched parenthesis ('(')")
+    logger.debug(str(tokens))
     return tokens
 
 
@@ -117,18 +120,17 @@ def parse(expression: str) -> list:
     return list_expression
 
 
-def remove_parenthesis(expression):
+def remove_parenthesis(exp):
     """Remove useless global parenthesis. Works recursively."""
     # If there is a parenthesis at beginning and at the end, and they are matching.
     try:
-        if expression != [] and expression[0][0] == '(' and expression[-1][0] == ')' and expression[0][2] == \
-                expression[-1][2]:
-            return remove_parenthesis(expression[1:-1])
+        if exp != [] and exp[0][0] == '(' and exp[-1][0] == ')' and exp[0][2] == exp[-1][2]:
+            return remove_parenthesis(exp[1:-1])
         else:
-            return expression
+            return exp
     except IndexError as e:
         logger.error("Error: index error: " + str(e))
-        raise Exception("missing operand near " + str(expression))
+        raise Exception("missing operand near " + str(exp))
 
 
 # FOR DEBUGGING PURPOSE ONLY
@@ -143,5 +145,20 @@ if __name__ == "__main__":
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    logger.info(parse("1 + 3 * 4 - 5"))
-    logger.info(parse("(1 + 3 * 5 - 6) + (4 / 7)"))
+    # logger.info(parse("1 + 3 * 4 - 5"))
+    # logger.info(parse("(1 + 3 * 5 - 6) + (4 / 7)"))
+    print(parse("(4+6)-5*9"))
+    # (parse("-1 + -1 + (-1 - -1)"))
+    # print(("-1 + -1 + (-1 - -1)"))
+    # (parse("(-1 - -1)"))
+    # print(("(-1 - -1)"))
+    # (parse("-(2 + 2)"))
+    # print(("-(2 + 2)"))
+    # (parse("-1 + -1 - (-1 - -1)"))
+    # print(("-1 + -1 - (-1 - -1)"))
+    # (parse("-1 + -1"))
+    # print(("-1 + -1"))
+    # (parse("(-1 + -1 - (-1 - -1))"))
+    # print(("(-1 + -1 - (-1 - -1))"))
+    # (parse("((-1 + -1 - (-1 - -1)))"))
+    # print(("((-1 + -1 - (-1 - -1)))"))

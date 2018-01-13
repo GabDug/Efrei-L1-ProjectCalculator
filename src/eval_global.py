@@ -62,136 +62,147 @@ def _eval_global(expression: list, var_dic: dict):
     logger.debug(" Operator: " + str(main_operator))
 
     # If there is one side of the expression missing (except for unary prefix operators)
-    if (left_expression == [] or right_expression == []) and main_operator[0] != "not":
+    if (left_expression == [] or right_expression == []) and (main_operator[0] not in ["not", "-"]):
         raise Exception(f"missing operand (near '{main_operator[0]}')")
+
+    right_eval = _eval_global(right_expression, var_dic)
 
     # Processing the prefix unary operator first, right side of expression
     if expression[operator_index][0] == "not":
-        right = _eval_global(right_expression, var_dic)
-        if right[1] == "boolean":
+        # right = _eval_global(right_expression, var_dic)
+        if right_eval[1] == "boolean":
             if left_expression is None or left_expression == []:
-                if right[0] == "true":
+                if right_eval[0] == "true":
                     return ("false", "boolean")
                 else:
                     return ("true", "boolean")
             else:
-                if right[0] == "true":
+                if right_eval[0] == "true":
                     left_expression.append(("false", "boolean"))
                 else:
                     left_expression.append(("true", "boolean"))
                 return _eval_global(left_expression, var_dic)
         else:
+            raise Exception(f"type mismatch ({main_operator[0]} {right_eval[1]})")
+    elif expression[operator_index][0] == "-" and expression[operator_index][2] == 0:
+        right_eval = _eval_global(right_expression, var_dic)
+        if right_eval[1] == "integer":
+            right_eval = (-1 * right_eval[0], "integer")
+            if left_expression is None or left_expression == []:
+                return right_eval
+            else:
+                left_expression.append(right_eval)
+                return _eval_global(left_expression, var_dic)
+        else:
             raise Exception(f"type mismatch ({main_operator[0]} {right[1]})")
 
-
     # Binary infix operators
-    else:
-        right = _eval_global(right_expression, var_dic)
-        # First, the assignment because we don't evaluate the variable name (left)
-        if main_operator[0] == '=' and len(left_expression) != 1:
-            raise Exception("variable assignment should be 'variable = exp'")
-        elif main_operator[0] == '=' and left_expression[0][1] == "variable":
-            if left_expression[0][0] in unauthorized_var:
-                raise Exception("variable name can't be a reserved keyword")
-            else:
-                var_dic[left_expression[0][0]] = right
-                return "", "none"
-        # If we have "=" but the left side is not a variable
-        elif main_operator[0] == '=' and left_expression[0][1] != "variable":
-            raise Exception("variable name must start with a letter")
 
-        # Then, all the operators that are binary (we evaluate
-        left = _eval_global(left_expression, var_dic)
+    # First, the assignment because we don't evaluate the variable name (left)
+    if main_operator[0] == '=' and len(left_expression) != 1:
+        raise Exception("variable assignment should be 'variable = exp'")
+    elif main_operator[0] == '=' and left_expression[0][1] == "variable":
+        if left_expression[0][0] in unauthorized_var:
+            raise Exception("variable name can't be a reserved keyword")
+        else:
+            var_dic[left_expression[0][0]] = right_eval
+            return "", "none"
+    # If we have "=" but the left side is not a variable
+    elif main_operator[0] == '=' and left_expression[0][1] != "variable":
+        raise Exception("variable name must start with a letter")
 
-        # For left and right:
-        # [0] is the value
-        # [1] is the type
-        # [2] is the priority (exists if type operator)
+    # Then, all the operators that are binary (we evaluate
+    left_eval = _eval_global(left_expression, var_dic)
 
-        # Integer only operators
-        if main_operator[0] in "%/-*":
-            if left[1] == right[1] == "integer":
-                if main_operator[0] == '*':
-                    return left[0] * right[0], "integer"
-                elif main_operator[0] == "/":
-                    return left[0] // right[0], "integer"
-                elif main_operator[0] == '-':
-                    return left[0] - right[0], "integer"
-                elif main_operator[0] == '%':
-                    return left[0] % right[0], "integer"
-            else:
-                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+    # For left and right:
+    # [0] is the value
+    # [1] is the type
+    # [2] is the priority (exists if type operator)
 
-        # Boolean only
-        elif main_operator[0] in ["and", "or"]:
-            if left[1] == right[1] == "boolean":
-                if main_operator[0] == "and":
-                    if left[0] == right[0] == 'true':
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-                elif main_operator[0] == 'or':
-                    if left[0] == "true" or right[0] == 'true':
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-            else:
-                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
+    # Integer only operators
+    if main_operator[0] in "%/-*":
+        if left_eval[1] == right_eval[1] == "integer":
+            if main_operator[0] == '*':
+                return left_eval[0] * right_eval[0], "integer"
+            elif main_operator[0] == "/":
+                return left_eval[0] // right_eval[0], "integer"
+            elif main_operator[0] == '-':
+                return left_eval[0] - right_eval[0], "integer"
+            elif main_operator[0] == '%':
+                return left_eval[0] % right_eval[0], "integer"
+        else:
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
 
-        # String and int only
-        elif main_operator[0] in ["<", ">", "<=", ">="]:
-            if (left[1] == right[1]) and (left[1] == "integer" or left[1] == "string"):
-                if main_operator[0] == '<':
-                    if left[0] < right[0]:
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-                elif main_operator[0] == '>':
-                    if left[0] > right[0]:
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-                elif main_operator[0] == '<=':
-                    if left[0] <= right[0]:
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-                elif main_operator[0] == '>=':
-                    if left[0] >= right[0]:
-                        return "true", "boolean"
-                    else:
-                        return "false", "boolean"
-            else:
-                raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
-
-        elif main_operator[0] == '+':
-            if left[1] != right[1]:
-                if left[1] == "string" and (right[1] == "integer" or right[1] == "boolean"):
-                    return left[0] + str(right[0]), "string"
-                elif (left[1] == "integer" or left[1] == "boolean") and right[1] == "string":
-                    return str(left) + right, "string"
-                else:
-                    raise Exception(f"type mismatch ({left[1]} {main_operator[0]} {right[1]})")
-            elif left[1] == right[1] == "integer":
-                return left[0] + right[0], "integer"
-            elif left[1] == right[1] == "string":
-                return left[0] + right[0], "string"
-            else:
-                raise Exception("unable to cast")
-
-
-        # Working with all types
-        elif main_operator[0] in ["==", "!="]:
-            if main_operator[0] == '==':
-                if left[0] == right[0]:
+    # Boolean only
+    elif main_operator[0] in ["and", "or"]:
+        if left_eval[1] == right_eval[1] == "boolean":
+            if main_operator[0] == "and":
+                if left_eval[0] == right_eval[0] == 'true':
                     return "true", "boolean"
                 else:
                     return "false", "boolean"
-            elif main_operator[0] == '!=':
-                if left[0] != right[0]:
+            elif main_operator[0] == 'or':
+                if left_eval[0] == "true" or right_eval[0] == 'true':
                     return "true", "boolean"
                 else:
                     return "false", "boolean"
+        else:
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+
+    # String and int only
+    elif main_operator[0] in ["<", ">", "<=", ">="]:
+        if (left_eval[1] == right_eval[1]) and (left_eval[1] == "integer" or left_eval[1] == "string"):
+            if main_operator[0] == '<':
+                if left_eval[0] < right_eval[0]:
+                    return "true", "boolean"
+                else:
+                    return "false", "boolean"
+            elif main_operator[0] == '>':
+                if left_eval[0] > right_eval[0]:
+                    return "true", "boolean"
+                else:
+                    return "false", "boolean"
+            elif main_operator[0] == '<=':
+                if left_eval[0] <= right_eval[0]:
+                    return "true", "boolean"
+                else:
+                    return "false", "boolean"
+            elif main_operator[0] == '>=':
+                if left_eval[0] >= right_eval[0]:
+                    return "true", "boolean"
+                else:
+                    return "false", "boolean"
+        else:
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+
+    elif main_operator[0] == '+':
+        if left_eval[1] != right_eval[1]:
+            if left_eval[1] == "string" and (right_eval[1] == "integer" or right_eval[1] == "boolean"):
+                return left_eval[0] + str(right_eval[0]), "string"
+            elif (left_eval[1] == "integer" or left_eval[1] == "boolean") and right_eval[1] == "string":
+                return str(left_eval[0]) + right_eval[0], "string"
+            else:
+                raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+        elif left_eval[1] == right_eval[1] == "integer":
+            return left_eval[0] + right_eval[0], "integer"
+        elif left_eval[1] == right_eval[1] == "string":
+            return left_eval[0] + right_eval[0], "string"
+        else:
+            raise Exception("unable to cast")
+
+
+    # Working with all types
+    elif main_operator[0] in ["==", "!="]:
+        if main_operator[0] == '==':
+            if left_eval[0] == right_eval[0]:
+                return "true", "boolean"
+            else:
+                return "false", "boolean"
+        elif main_operator[0] == '!=':
+            if left_eval[0] != right_eval[0]:
+                return "true", "boolean"
+            else:
+                return "false", "boolean"
 
 
 def _first_eval(expression: list, variable_dic):
@@ -219,7 +230,7 @@ def find_operator(expression):
     to the beggining (left associativity, from the lowest priority operator to the highest, ignoring operators in
     factors (between parenthesis)."""
     parenthesis = 0
-    for j in range(7, -1, -1):
+    for j in range(7, -2, -1):
         for i in range(len(expression) - 1, -1, -1):
             if expression[i][1] == "parenthesis":
                 if expression[i][0] == '(':
@@ -239,14 +250,29 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler(stdout)
-    ch.setLevel(logging.INFO)
+    ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(asctime)s [%(levelname)s] : %(message)s")
     formatter.datefmt = "%H:%M:%S"
     ch.setFormatter(formatter)
     logger.addHandler(ch)
     logger.info("Starting logger from module.")
 
-    dict_var = {}
-    print(ext_eval_global("a = 10", dict_var))
-    print(ext_eval_global("a + 1", dict_var))
-    print(ext_eval_global("true and false and not true or false", dict_var))
+    # dict_var = {}
+    # print(ext_eval_global("a = 10", dict_var))
+    # print(ext_eval_global("a + 1", dict_var))
+    # print(ext_eval_global("true and false and not true or false", dict_var))
+    # print(ext_eval_global("-1"))
+    # print(ext_eval_global("2-1"))
+    print(ext_eval_global("'test' + 45"))
+    print(ext_eval_global("45 + 'Test'"))
+    # print(ext_eval_global("-1 + -1 + (-1 - -1)"))
+    # print(ext_eval_global("-1 + -1"))
+    # print(ext_eval_global("(-2 - -4)"))
+    # print(ext_eval_global("(0 + -1)"))
+    # print(ext_eval_global("(-1)"))
+    # print(ext_eval_global("(-1 - -1)"))
+    # print(ext_eval_global("-(2 + 2)"))
+    # print(ext_eval_global("-1 + -1 - (-1 - -1)"))
+    # print(ext_eval_global("-1 + -1"))
+    # print(ext_eval_global("(-1 + -1 - (-1 - -1))"))
+    # print(ext_eval_global("((-1 + -1 - (-1 - -1)))"))
