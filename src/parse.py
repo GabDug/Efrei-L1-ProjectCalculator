@@ -90,7 +90,7 @@ def _expression_to_list(expression: str) -> list:
             elif expression[i:j] in ["==", "!=", "<=", ">=", "<", ">"]:
                 tup = (expression[i:j], "operator", 3)
             else:
-                tup = (expression[i:j], "unknown")
+                raise Exception(f"Unkown symbol at {i} ({expression[i:j]})")
             tokens.append(tup)
             i = j
         elif expression[i] in "'\"":

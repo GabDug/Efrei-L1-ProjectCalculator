@@ -73,9 +73,9 @@ def _eval_global(expression: list, var_dic: dict):
         if right_eval[1] == "boolean":
             if left_expression is None or left_expression == []:
                 if right_eval[0] == "true":
-                    return ("false", "boolean")
+                    return "false", "boolean"
                 else:
-                    return ("true", "boolean")
+                    return "true", "boolean"
             else:
                 if right_eval[0] == "true":
                     left_expression.append(("false", "boolean"))
@@ -94,7 +94,7 @@ def _eval_global(expression: list, var_dic: dict):
                 left_expression.append(right_eval)
                 return _eval_global(left_expression, var_dic)
         else:
-            raise Exception(f"type mismatch ({main_operator[0]} {right[1]})")
+            raise Exception(f"type mismatch ({main_operator[0]} {right_eval[1]})")
 
     # Binary infix operators
 
@@ -131,7 +131,7 @@ def _eval_global(expression: list, var_dic: dict):
             elif main_operator[0] == '%':
                 return left_eval[0] % right_eval[0], "integer"
         else:
-            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right_eval[1]})")
 
     # Boolean only
     elif main_operator[0] in ["and", "or"]:
@@ -147,7 +147,7 @@ def _eval_global(expression: list, var_dic: dict):
                 else:
                     return "false", "boolean"
         else:
-            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right_eval[1]})")
 
     # String and int only
     elif main_operator[0] in ["<", ">", "<=", ">="]:
@@ -173,7 +173,7 @@ def _eval_global(expression: list, var_dic: dict):
                 else:
                     return "false", "boolean"
         else:
-            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+            raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right_eval[1]})")
 
     elif main_operator[0] == '+':
         if left_eval[1] != right_eval[1]:
@@ -182,14 +182,13 @@ def _eval_global(expression: list, var_dic: dict):
             elif (left_eval[1] == "integer" or left_eval[1] == "boolean") and right_eval[1] == "string":
                 return str(left_eval[0]) + right_eval[0], "string"
             else:
-                raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right[1]})")
+                raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right_eval[1]})")
         elif left_eval[1] == right_eval[1] == "integer":
             return left_eval[0] + right_eval[0], "integer"
         elif left_eval[1] == right_eval[1] == "string":
             return left_eval[0] + right_eval[0], "string"
         else:
             raise Exception("unable to cast")
-
 
     # Working with all types
     elif main_operator[0] in ["==", "!="]:
@@ -218,11 +217,11 @@ def _first_eval(expression: list, variable_dic):
 
 def ext_eval_global(expression_str: str, variable_dic=None):
     """Evaluates an expression (boolean, integer or string), where the input is a string."""
-    eval = _first_eval(parse(expression_str), variable_dic)
-    if eval is None:
+    evaluated = _first_eval(parse(expression_str), variable_dic)
+    if evaluated is None:
         return ""
     else:
-        return eval[0]
+        return evaluated[0]
 
 
 def find_operator(expression):
@@ -263,7 +262,7 @@ if __name__ == "__main__":
     # print(ext_eval_global("true and false and not true or false", dict_var))
     # print(ext_eval_global("-1"))
     # print(ext_eval_global("2-1"))
-    print(ext_eval_global("'test' + 45"))
+    print(ext_eval_global("1+*"))
     print(ext_eval_global("45 + 'Test'"))
     # print(ext_eval_global("-1 + -1 + (-1 - -1)"))
     # print(ext_eval_global("-1 + -1"))
