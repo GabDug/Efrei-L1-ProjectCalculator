@@ -9,12 +9,13 @@ logger = logger_conf.Log.logger
 
 
 def clear():
-    system('cls' if name == 'nt' else '_clear')
+    system('cls' if name == 'nt' else 'clear')
 
 
 variable_list = {}
 
 clear()
+
 print("Welcome to the Calculator.\nUse \"exit\" to exit console or hit enter twice.")
 
 exit = False
@@ -42,7 +43,7 @@ while True:
         res = ext_eval_global(exp, variable_list)
         if res != "":
             print(res)
-    # Catch the exception eval raise
+    # Catch the exception eval can raise
     except Exception as e:
         print("Error: " + str(e))
         logger.error(str(e))

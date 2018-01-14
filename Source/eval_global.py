@@ -175,6 +175,7 @@ def _eval_global(expression: list, var_dic: dict):
         else:
             raise Exception(f"type mismatch ({left_eval[1]} {main_operator[0]} {right_eval[1]})")
 
+    # Plus: str + str, int + int, or mixed
     elif main_operator[0] == '+':
         if left_eval[1] != right_eval[1]:
             if left_eval[1] == "string" and (right_eval[1] == "integer" or right_eval[1] == "boolean"):
@@ -231,12 +232,14 @@ def find_operator(expression):
     parenthesis = 0
     for j in range(7, -2, -1):
         for i in range(len(expression) - 1, -1, -1):
+            # We have a "depth" of subexpressions, 0 being the root expression (increasing counter)
             if expression[i][1] == "parenthesis":
                 if expression[i][0] == '(':
                     parenthesis += 1
                 else:
                     parenthesis -= 1
             elif expression[i][1] == "operator":
+                # If the operator has the priority we're looking for and we are not in a subexpression
                 if expression[i][2] == j and parenthesis == 0:
                     return i
 
